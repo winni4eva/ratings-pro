@@ -1,0 +1,131 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "ng2-googlechart",
+        "scope": null,
+        "escapedName": "ng2-googlechart",
+        "name": "ng2-googlechart",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "C:\\wamp64\\www\\ratings-pro"
+    ]
+  ],
+  "_from": "ng2-googlechart@latest",
+  "_id": "ng2-googlechart@2.0.10",
+  "_inCache": true,
+  "_location": "/ng2-googlechart",
+  "_nodeVersion": "6.2.0",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/ng2-googlechart-2.0.10.tgz_1482680035358_0.8199012596160173"
+  },
+  "_npmUser": {
+    "name": "shreekantha",
+    "email": "shreekantha.dk@spaneos.com"
+  },
+  "_npmVersion": "3.8.9",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "ng2-googlechart",
+    "scope": null,
+    "escapedName": "ng2-googlechart",
+    "name": "ng2-googlechart",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/ng2-googlechart/-/ng2-googlechart-2.0.10.tgz",
+  "_shasum": "e2974f2f433cca747753339ba3cc81fc22f56883",
+  "_shrinkwrap": null,
+  "_spec": "ng2-googlechart",
+  "_where": "C:\\wamp64\\www\\ratings-pro",
+  "author": {
+    "name": "Shreekanth"
+  },
+  "bugs": {
+    "url": "https://github.com/shreekantha/ng2-googlechart/issues"
+  },
+  "dependencies": {},
+  "description": "Angular 2 Google Charts library",
+  "devDependencies": {
+    "@angular/compiler": "^2.0.0",
+    "@angular/core": "^2.0.0",
+    "@angular/platform-browser": "^2.0.0",
+    "@angular/platform-browser-dynamic": "^2.0.0",
+    "jasmine-core": "^2.4.1",
+    "karma": "^1.3.0",
+    "karma-jasmine": "^1.0.2",
+    "karma-phantomjs-launcher": "^1.0.2",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "1.7.0",
+    "reflect-metadata": "^0.1.3",
+    "rxjs": "5.0.0-beta.12",
+    "ts-helpers": "^1.1.1",
+    "ts-loader": "^0.8.2",
+    "tslint": "^3.15.1",
+    "typescript": "2.0.2",
+    "typings": "^1.3.3",
+    "webpack": "^1.12.14",
+    "webpack-dev-server": "^1.14.1",
+    "zone.js": "^0.6.23"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "e2974f2f433cca747753339ba3cc81fc22f56883",
+    "tarball": "https://registry.npmjs.org/ng2-googlechart/-/ng2-googlechart-2.0.10.tgz"
+  },
+  "files": [
+    "build"
+  ],
+  "gitHead": "cc48d1a5c0091de65996db4f28ea8b7e5eb8c8f2",
+  "homepage": "https://github.com/shreekantha/ng2-googlechart#readme",
+  "keywords": [
+    "angular2 charts",
+    "Charts",
+    "chart",
+    "charts",
+    "google chart",
+    "google charts",
+    "angular2 google charts",
+    "ng charts",
+    "ng2 charts",
+    "ng2 google charts",
+    "ng google charts"
+  ],
+  "license": "MIT",
+  "main": "build/ng2-googlechart.js",
+  "maintainers": [
+    {
+      "name": "shreekantha",
+      "email": "shreekantha.dk@spaneos.com"
+    }
+  ],
+  "name": "ng2-googlechart",
+  "optionalDependencies": {},
+  "peerDependencies": {
+    "@angular/core": "^2.0.0"
+  },
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shreekantha/ng2-googlechart.git"
+  },
+  "scripts": {
+    "build": "npm run flow:lint && npm run flow.install:typings && npm run flow:compile",
+    "flow.install:typings": "typings install",
+    "flow:compile": "rm -rf build && tsc",
+    "flow:lint": "tslint src/*.ts",
+    "prepublish": "npm run build",
+    "test": "karma start",
+    "test:ci": "karma start --singleRun"
+  },
+  "typings": "build/ng2-googlechart.d.ts",
+  "version": "2.0.10"
+}

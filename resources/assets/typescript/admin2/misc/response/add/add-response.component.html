@@ -1,0 +1,59 @@
+<my-content [title]="'Add Response'">
+        <div class="content">
+            <form autocomplete="off" [formGroup]="form" (ngSubmit)="add(form.value, form.valid)" novalidate>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Response</label>
+                        <input type="text" class="form-control" formControlName="name">
+                        <small [hidden]="form.controls.name.pristine || !form.controls.name.hasError('required')" class="inputError">Response name is required.</small>
+                    </div>
+               </div>
+
+               <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Rater</label>
+                        <select class="form-control" formControlName="rater">
+                            <option [value]="">--Select Rater--</option>
+                            <option [value]="0">No</option>
+                            <option [value]="1">Yes</option>
+                        </select>
+                        <small [hidden]="form.controls.rater.pristine || !form.controls.rater.hasError('required')" class="inputError">Rater name is required.</small>
+                    </div>
+               </div>
+
+               <div class="row" formGroupName="raters">
+
+                    <div class="col-md-6" [hidden]="form.controls.rater.value=='0'">
+                        <div class="form-group">
+                            <label>Score</label>
+                            <input type="text" class="form-control" formControlName="score">
+                            <small [hidden]="form.controls.score.pristine || !form.controls.score.hasError('required')" class="inputError">Score is required.</small>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6" [hidden]="form.controls.rater.value=='0'">
+                            <div class="form-group">
+                                <label>Image</label>
+                                <select formControlName="image_id" class="form-control" (click)="onChange($event)">
+                                    <option *ngFor="let image of _images; let i = index" value="{{image.id}}">
+                                        Image {{i+1}}
+                                    </option>
+                                </select>
+                            </div>
+                    </div>
+              </div>
+
+              <div class="col-md-3" *ngIf="_displayImage" [hidden]="form.controls.rater.value=='0'>
+                <img [src]="_displayImage" class="img-thumbnail" style="width:250px;height:250px"/>
+              </div>
+
+              <div class="col-md-12">
+                <button type="submit" class="btn btn-info btn-fill pull-left" [disabled]="!form.valid">Add Response</button>
+              </div>
+             
+              <div class="clearfix"></div>
+              
+            </form>
+        </div>
+    </my-content>

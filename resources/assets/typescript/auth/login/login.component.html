@@ -1,0 +1,43 @@
+<div class="logmod">
+          <div class="logmod__wrapper">
+
+            <span class="logmod__close">Close</span>
+
+            <div class="logmod__container">
+              <ul class="logmod__tabs">
+                <li data-tabtar="lgm-2" [ngClass]=""><a [routerLink]="['/auth/login']">Login</a></li>
+                <!--<li data-tabtar="lgm-1" [ngClass]=""><a [routerLink]="['/auth/signup']">Sign Up</a></li>-->
+              </ul>
+
+              <div class="logmod__tab-wrapper"><!-- Login / Signup Container -->
+                  <div class="logmod__tab lgm-2">
+                    <div class="logmod__heading">
+                    <span class="logmod__heading-subtitle">Enter your email and password <strong>to sign in</strong></span>
+                    </div> 
+                    <div class="logmod__form">
+                    <form autocomplete="off" [formGroup]="_loginForm" (ngSubmit)="login(_loginForm.value, _loginForm.valid)" novalidate class="simform">
+                        <div class="sminputs">
+                        <div class="input full">
+                            <!--<label class="string optional" for="user-name">Email*</label>-->
+                            <input class="string optional myInput" formControlName="email" maxlength="255" id="user-email" placeholder="Email" type="email" size="50" />
+                            <small [hidden]="_loginForm.controls.email.pristine || !_loginForm.controls.email.hasError('required')" class="inputError">Email is required.</small>
+                            <small [hidden]="!_loginForm.controls.email.hasError('incorrectMailFormat')" class="inputError">Email format should be <i>example@example.com</i>.</small>
+                        </div>
+                        </div>
+                        <div class="sminputs">
+                        <div class="input full">
+                            <!--<label class="string optional" for="user-pw">Password *</label>-->
+                            <input class="string optional myInput" formControlName="password" maxlength="255" id="user-pw" placeholder="Password" type="password" size="50" />
+                            <small [hidden]="_loginForm.controls.password.pristine || !_loginForm.controls.password.hasError('required')" class="inputError">Password is required.</small>
+                        </div>
+                        </div>
+                        <div class="simform__actions">
+                        <button class="sumbit" name="commit" type="sumbit" [disabled]="!_loginForm.valid">Log In</button>
+                        <span class="simform__actions-sidetext"><a class="special" role="link" href="#">Forgot your password?<br>Click here</a></span>
+                        </div> 
+                    </form>
+                    </div> 
+              </div>
+            </div>
+          </div>
+        </div>

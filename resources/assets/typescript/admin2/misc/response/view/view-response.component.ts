@@ -1,0 +1,93 @@
+import { Component, OnInit, OnDestroy  } from '@angular/core';
+import { MiscService } from '../../misc.service';
+import {NotificationsService} from 'angular2-notifications';
+//import{ Pagination, PaginatedResult } from '../../../../shared/interfaces/interfaces'
+
+@Component({
+    selector: 'my-view-response',
+    template:
+   `
+        <simple-notifications [options]="_options"></simple-notifications>
+
+        <my-content title="Responses">
+            <div class="content table-responsive table-full-width">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <th>Name</th>
+                        <th>Score</th>
+                        <th>Image</th>
+                        <!--<th>Action</th>-->
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let response of _responses; let i = index">
+                            <td>{{response?.name}}</td>
+                            <td>{{response?.rater?.score}}</td>
+                            <td><img [src]="response?.rater?.image?.src" style="width:50px;height:50px"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </my-content>
+    `
+})
+
+export class ViewResponseComponent implements OnInit, OnDestroy {
+
+    private _responses;
+
+    private _actionValue:any[] = [];
+
+    private _options = {
+        position: ["top", "right"],
+        timeOut: 9000,
+        lastOnBottom: true
+    }
+
+    public itemsPerPage: number = 2;
+
+    public totalItems: number = 0;
+
+    public currentPage: number = 1;
+
+    constructor(
+                private _miscService: MiscService,
+                private _notification: NotificationsService){}
+
+    ngOnInit(){
+        this.getResponses();
+    }
+
+    getResponses(){
+
+        this._miscService.getResponses(this.currentPage, this.itemsPerPage).subscribe(
+            result => {
+                this._responses = result.responses;
+                //this.totalItems = result.responses.total;
+            },
+            error => this._notification.error('Error', error)
+        );
+
+    }
+
+    action(responseId) {
+        console.log(responseId);
+        if(!this._actionValue[responseId]) return;
+
+        if(this._actionValue[responseId]=='delete') this.removeBook(responseId);
+        //if(this._actionValue[responseId]=='edit') this.
+    }
+
+    removeBook(responseId){
+        this._miscService.removeResponse(responseId)
+                .subscribe( 
+                                result => this._responses = result.responses,
+                                error => this._notification.error('Error', error),
+                                () => this.getResponses()
+                            );
+    }
+
+    ngOnDestroy(){
+        //
+    }
+ }

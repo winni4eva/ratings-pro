@@ -1,0 +1,31 @@
+<div formArrayName="responses" class="row">
+
+        <div *ngFor="let response of question.controls.responses; let j=index">
+
+        <!-- response header, show remove button when more than one question available -->
+        
+        <div class="pull-right">
+            <span *ngIf="j > 0" 
+                (click)="removeResponse(i,j)"><i style="font-size:40px !important" class="pe-7s-close"></i>
+            </span>
+        </div>
+
+        <!-- Angular assigns array index as group name by default 0, 1, 2, ... -->
+        <div [formGroupName]="j" class="col-md-2">
+            <!-- question -->
+            <div class="form-group">
+                <label>Response {{j + 1}}</label>
+                <select class="form-control" formControlName="response">
+                    <option *ngFor="let response of _responses" [value]="response.id">{{response.name}}</option>
+                </select>
+                
+                <small [hidden]="form.controls.questions.controls[i].controls[j].response.pristine || !form.controls.questions.controls[i].controls[j].response.hasError('required')">
+                    Response is required
+                </small>
+                
+            </div>
+        </div>
+        
+    </div>
+
+    </div>
