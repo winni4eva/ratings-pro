@@ -75,7 +75,8 @@ class LoginController extends Controller
         //$user = $this->userService->getUserBranches(Auth::user()->id); 
         //$user = Auth::setToken('YourJWTAuthToken')->user();
     
-        return $this->authenticated($request, $user, $token);
+        //return $this->authenticated($request, $user, $token);
+        return response()->json(compact(['user','token']));
     }
 
     //protected function sendLoginResponse(Request $request, $throttles, string $token)
