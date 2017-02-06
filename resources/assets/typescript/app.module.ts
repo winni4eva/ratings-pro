@@ -27,6 +27,8 @@ import { ViewImageComponent } from './admin2/misc/image/view/view-image.componen
 import { AddImageComponent } from './admin2/misc/image/add/add-image.component';
 import { ViewResponseComponent } from './admin2/misc/response/view/view-response.component';
 import { AddResponseComponent } from './admin2/misc/response/add/add-response.component';
+import { AddUserComponent } from './admin2/user/add/add-user.component';
+import { ViewUserComponent } from './admin2/user/view/view-user.component';
 import { ReportComponent } from './admin2/report/report.component';
 import { BranchSurveyComponent } from './admin2/branch/branchSurveys/branch-surveys.component';
 import { ZingChart } from './admin2/chart/zingchart.component';
@@ -59,6 +61,7 @@ import { SimpleNotificationsModule, SimpleNotificationsComponent, NotificationsS
 import { FileService } from './shared/file-generator/file.service';
 import { HomeService } from './home/home.service';
 import { ReportService } from './admin2/report/report.service';
+import { UserService } from './admin2/user/user.service';
 //import { Ng2PaginationModule } from 'ng2-pagination';
 //import {PaginatePipe, PaginationService} from 'ng2-pagination';
 import { MyDatePickerModule } from 'mydatepicker';
@@ -76,7 +79,7 @@ import { ModalService } from './shared/modal/modal.service';
                     HeaderComponent, ContentComponent, ViewBranchComponent, FooterComponent,
                     AddBranchComponent, ViewCategoryComponent, AddCategoryComponent, ViewSurveyComponent,
                     AddSurveyComponent, ViewImageComponent, AddImageComponent, ViewResponseComponent, AddResponseComponent,
-                    ReportComponent, ZingChart, Modal, BranchSurveyComponent
+                    ReportComponent, ZingChart, Modal, BranchSurveyComponent, AddUserComponent, ViewUserComponent
                    // HeaderComponent, SideBarComponent, ContentHeaderComponent, BoxesComponent,
                    // TabsComponent, AddUserComponent, ViewUserComponent, AddSurverComponent,
                    // ViewSurveyComponent, AddBranchComponent, ViewBranchComponent, MiscComponent, AddCategoryComponent 
@@ -86,7 +89,7 @@ import { ModalService } from './shared/modal/modal.service';
         XHRBackend, BrowserXhr, 
         BranchService, CategoryService, SurveyService, MiscService,
         NotificationsService, FileService, HomeService, ReportService,
-        ModalService,
+        ModalService, UserService,
         { provide: RequestOptions, useClass: MyRequestOptions },
         {   provide: Http,
             useFactory: (backend: XHRBackend, defaultOptions: RequestOptions) => new CustomHttp(backend, defaultOptions),

@@ -13,6 +13,8 @@ import { ViewResponseComponent } from './misc/response/view/view-response.compon
 import { AddResponseComponent } from './misc/response/add/add-response.component';
 import { ReportComponent } from './report/report.component';
 import { BranchSurveyComponent } from './branch/branchSurveys/branch-surveys.component';
+import { AddUserComponent } from './user/add/add-user.component';
+import { ViewUserComponent } from './user/view/view-user.component';
  
 export const AdminRoutes: Routes = [
     {
@@ -31,6 +33,8 @@ export const AdminRoutes: Routes = [
             { path: 'add_response', component: AddResponseComponent },
             { path: 'report', component: ReportComponent },
             { path: 'branch-surveys/:branchId', component: BranchSurveyComponent },
+            { path: 'view_users', component: ViewUserComponent },
+            { path: 'add_user', component: AddUserComponent},
             { path: '', component: ViewBranchComponent },
         ],
         canActivate:[AuthGuard]

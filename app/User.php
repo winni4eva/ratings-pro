@@ -44,6 +44,10 @@ class User extends Authenticatable implements AuthenticatableContract, Authoriza
         return $this->belongsToMany(Branch::class,'branch_user');
     }
 
+    public function branchUser(){
+        return $this->hasMany(BranchUser::class);
+    }
+
     public function setFirstNameAttribute($value){
 
         $this->attributes['first_name'] = ucfirst( strtolower( $value ) ); 

@@ -20,7 +20,36 @@ class BranchSurveyRepo implements BranchSurveyRepoInterface
      */
     public function save(array $request)
     {
-        return $this->model->updateOrCreate($request, $request);
+        
+        $survey = \DB::table('surveys')->where('id',$request['survey_id'])->first();
+        
+        $branchSurveys = $this->model->where('branch_id', $request['branch_id'])->get();
+        
+        $updated = false;
+        foreach ($branchSurveys as $bSurvey) {
+
+            $survey2 = \DB::table('surveys')->where('id', $bSurvey->survey_id)->first();
+
+            if( ($request['branch_id'] == $bSurvey->branch_id) && ($survey->category_id == $survey2->category_id) ){
+                
+                //update branch survey
+                $this->model->where('branch_id', $request['branch_id'])
+                ->where('survey_id', $bSurvey->survey_id)
+                ->update(
+                    [
+                        'branch_id' => $request['branch_id'], 
+                        'survey_id' => $request['survey_id'] 
+                    ]
+                );
+                
+                $updated = true;
+    
+            }
+        }
+
+        if(!$updated)
+            return $this->model->updateOrCreate($request, $request);
+        return true;
     }
 
     /**

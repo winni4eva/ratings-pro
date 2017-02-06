@@ -22,7 +22,6 @@ class CreateSurveysTable extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->string('title');
-            $table->integer('active')->default(0);
             $table->timestamps();
         });
     }

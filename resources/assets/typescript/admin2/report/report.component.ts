@@ -63,14 +63,40 @@ import { FileService } from '../../shared/file-generator/file.service';
                 </ul>
 
                 <div class="img-thumbnail" style="width:200%">
+                    <a class="btn btn-primary pull-left" (click)="changeReportType('raw')">Raw Data</a>
+                    <a class="btn btn-primary pull-left" (click)="changeReportType('chart')">Chart</a>
+
                     <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event,'to')" *ngIf="fromDatePickerSet" class="pull-right"></my-date-picker>
                     <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event,'from')" class="pull-right"></my-date-picker>
                 </div>
 
                 <div class="tab-content clearfix img-thumbnail" style="width:200%">
 
-                    <div class="tab-pane active" id="1a" *ngIf="clickedTab=='Overview'">
+                    <div class="tab-pane active" id="1a" *ngIf="clickedTab=='Overview' && _tabOptions[clickedTab]=='chart'">
                         <zingchart *ngFor="let chart of barcharts" [chart]="chart" ></zingchart>
+                    </div>
+
+                    <div class="tab-pane active" id="1a" *ngIf="clickedTab=='Overview' && _tabOptions[clickedTab]=='raw'">
+                        <div class="content table-responsive table-full-width">
+                            <table class="table table-hover table-striped">
+                                <thead>
+                                    <th style="color:black">Questionaire</th>
+                                    <th style="color:black">Previous Response</th>
+                                    <th style="color:black">Response</th>
+                                    <th style="color:black">Rater</th>
+                                    <th style="color:black">Date</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="color:black">testing</td>
+                                        <td style="color:black">testing</td>
+                                        <td style="color:black">testing</td>
+                                        <td style="color:black">testing</td>
+                                        <td style="color:black">testing</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     
                     <div class="tab-pane" id="2a" *ngIf="clickedTab=='Surveys'">
@@ -127,6 +153,13 @@ import { FileService } from '../../shared/file-generator/file.service';
     };
 
      private clickedTab = 'Overview';
+
+     private _tabOptions ={
+                            'Overview':'raw',
+                            'Surveys':'raw',
+                            'Ratings':'raw',
+                            'Branches':'raw'
+                            };
 
      private fromDatePickerSet; 
 
@@ -278,6 +311,10 @@ import { FileService } from '../../shared/file-generator/file.service';
         this.getReport(this.dateFilter);
         this.fromDatePickerSet='';
         this.dateFilter=[];
+    }
+
+    changeReportType(type){
+        this._tabOptions[this.clickedTab] = type;
     }
        
    }

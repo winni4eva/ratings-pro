@@ -17,15 +17,6 @@ import { MiscService } from '../../misc/misc.service';
             <form autocomplete="off" [formGroup]="form" (ngSubmit)="add(form.value, form.valid)" novalidate>
 
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Branch</label>
-                            <select formControlName="branch_id" class="form-control">
-                                <option *ngFor="let branch of _branches" value="{{branch.id}}">{{branch.name}}</option>
-                            </select>
-                            <small [hidden]="form.controls.branch_id.pristine || !form.controls.branch_id.hasError('required')" class="inputError">Category name is required.</small>
-                        </div>
-                    </div>
 
                     <div class="col-md-6">
                         <div class="form-group">
@@ -101,7 +92,6 @@ export class AddCategoryComponent implements OnInit {
         
         this.form = new FormGroup({
             name: new FormControl('', [Validators.required]),
-            branch_id: new FormControl('', [Validators.required]),
             image_id: new FormControl('', [Validators.required])
         });
     }

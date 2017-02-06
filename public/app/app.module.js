@@ -1,4 +1,4 @@
-System.register(['@angular/core', '@angular/http', '@angular/platform-browser', '@angular/forms', './app.component', './home/home.component', './admin2/admin.component', './auth/login/login.component', './admin2/header/header.component', './admin2/sidebar/sidebar.component', './admin2/content/content.component', './admin2/branch/view/view-branch.component', './admin2/branch/add/add-branch.component', './admin2/category/view/view-category.component', './admin2/category/add/add-category.component', './admin2/survey/view/view-survey.component', './admin2/survey/add/add-survey.component', './admin2/misc/image/view/view-image.component', './admin2/misc/image/add/add-image.component', './admin2/misc/response/view/view-response.component', './admin2/misc/response/add/add-response.component', './admin2/report/report.component', './admin2/branch/branchSurveys/branch-surveys.component', './admin2/chart/zingchart.component', './shared/modal/modal.component', './admin2/footer/footer.component', './app.routes', './shared/interceptor/interceptor.service', './shared/interceptor/request-options', './auth/login/login.service', './admin2/branch/branch.service', './admin2/category/category.service', './admin2/survey/survey.service', './admin2/misc/misc.service', './shared/storage/storage.service', './auth/auth.guard', 'angular2-notifications', './shared/file-generator/file.service', './home/home.service', './admin2/report/report.service', 'mydatepicker', './shared/modal/modal.service'], function(exports_1, context_1) {
+System.register(['@angular/core', '@angular/http', '@angular/platform-browser', '@angular/forms', './app.component', './home/home.component', './admin2/admin.component', './auth/login/login.component', './admin2/header/header.component', './admin2/sidebar/sidebar.component', './admin2/content/content.component', './admin2/branch/view/view-branch.component', './admin2/branch/add/add-branch.component', './admin2/category/view/view-category.component', './admin2/category/add/add-category.component', './admin2/survey/view/view-survey.component', './admin2/survey/add/add-survey.component', './admin2/misc/image/view/view-image.component', './admin2/misc/image/add/add-image.component', './admin2/misc/response/view/view-response.component', './admin2/misc/response/add/add-response.component', './admin2/user/add/add-user.component', './admin2/user/view/view-user.component', './admin2/report/report.component', './admin2/branch/branchSurveys/branch-surveys.component', './admin2/chart/zingchart.component', './shared/modal/modal.component', './admin2/footer/footer.component', './app.routes', './shared/interceptor/interceptor.service', './shared/interceptor/request-options', './auth/login/login.service', './admin2/branch/branch.service', './admin2/category/category.service', './admin2/survey/survey.service', './admin2/misc/misc.service', './shared/storage/storage.service', './auth/auth.guard', 'angular2-notifications', './shared/file-generator/file.service', './home/home.service', './admin2/report/report.service', './admin2/user/user.service', 'mydatepicker', './shared/modal/modal.service'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['@angular/core', '@angular/http', '@angular/platform-browser', 
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, http_1, platform_browser_1, forms_1, http_2, app_component_1, home_component_1, admin_component_1, login_component_1, header_component_1, sidebar_component_1, content_component_1, view_branch_component_1, add_branch_component_1, view_category_component_1, add_category_component_1, view_survey_component_1, add_survey_component_1, view_image_component_1, add_image_component_1, view_response_component_1, add_response_component_1, report_component_1, branch_surveys_component_1, zingchart_component_1, modal_component_1, footer_component_1, app_routes_1, interceptor_service_1, request_options_1, login_service_1, branch_service_1, category_service_1, survey_service_1, misc_service_1, storage_service_1, auth_guard_1, angular2_notifications_1, file_service_1, home_service_1, report_service_1, mydatepicker_1, modal_service_1;
+    var core_1, http_1, platform_browser_1, forms_1, http_2, app_component_1, home_component_1, admin_component_1, login_component_1, header_component_1, sidebar_component_1, content_component_1, view_branch_component_1, add_branch_component_1, view_category_component_1, add_category_component_1, view_survey_component_1, add_survey_component_1, view_image_component_1, add_image_component_1, view_response_component_1, add_response_component_1, add_user_component_1, view_user_component_1, report_component_1, branch_surveys_component_1, zingchart_component_1, modal_component_1, footer_component_1, app_routes_1, interceptor_service_1, request_options_1, login_service_1, branch_service_1, category_service_1, survey_service_1, misc_service_1, storage_service_1, auth_guard_1, angular2_notifications_1, file_service_1, home_service_1, report_service_1, user_service_1, mydatepicker_1, modal_service_1;
     var AppModule;
     return {
         setters:[
@@ -78,6 +78,12 @@ System.register(['@angular/core', '@angular/http', '@angular/platform-browser', 
             function (add_response_component_1_1) {
                 add_response_component_1 = add_response_component_1_1;
             },
+            function (add_user_component_1_1) {
+                add_user_component_1 = add_user_component_1_1;
+            },
+            function (view_user_component_1_1) {
+                view_user_component_1 = view_user_component_1_1;
+            },
             function (report_component_1_1) {
                 report_component_1 = report_component_1_1;
             },
@@ -135,6 +141,9 @@ System.register(['@angular/core', '@angular/http', '@angular/platform-browser', 
             function (report_service_1_1) {
                 report_service_1 = report_service_1_1;
             },
+            function (user_service_1_1) {
+                user_service_1 = user_service_1_1;
+            },
             function (mydatepicker_1_1) {
                 mydatepicker_1 = mydatepicker_1_1;
             },
@@ -157,14 +166,14 @@ System.register(['@angular/core', '@angular/http', '@angular/platform-browser', 
                             header_component_1.HeaderComponent, content_component_1.ContentComponent, view_branch_component_1.ViewBranchComponent, footer_component_1.FooterComponent,
                             add_branch_component_1.AddBranchComponent, view_category_component_1.ViewCategoryComponent, add_category_component_1.AddCategoryComponent, view_survey_component_1.ViewSurveyComponent,
                             add_survey_component_1.AddSurveyComponent, view_image_component_1.ViewImageComponent, add_image_component_1.AddImageComponent, view_response_component_1.ViewResponseComponent, add_response_component_1.AddResponseComponent,
-                            report_component_1.ReportComponent, zingchart_component_1.ZingChart, modal_component_1.Modal, branch_surveys_component_1.BranchSurveyComponent
+                            report_component_1.ReportComponent, zingchart_component_1.ZingChart, modal_component_1.Modal, branch_surveys_component_1.BranchSurveyComponent, add_user_component_1.AddUserComponent, view_user_component_1.ViewUserComponent
                         ],
                         providers: [
                             login_service_1.LoginService, storage_service_1.StorageService, auth_guard_1.AuthGuard,
                             http_2.XHRBackend, http_2.BrowserXhr,
                             branch_service_1.BranchService, category_service_1.CategoryService, survey_service_1.SurveyService, misc_service_1.MiscService,
                             angular2_notifications_1.NotificationsService, file_service_1.FileService, home_service_1.HomeService, report_service_1.ReportService,
-                            modal_service_1.ModalService,
+                            modal_service_1.ModalService, user_service_1.UserService,
                             { provide: http_2.RequestOptions, useClass: request_options_1.MyRequestOptions },
                             { provide: http_2.Http,
                                 useFactory: function (backend, defaultOptions) { return new interceptor_service_1.CustomHttp(backend, defaultOptions); },

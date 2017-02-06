@@ -86,6 +86,16 @@ import {NotificationsService} from 'angular2-notifications';
                                 <li><a [routerLink]="['/admin/add_image']">New</a></li>
                               </ul>
                         </li>
+                        <li class="dropdown">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    User
+                                    <b class="caret"></b>
+                              </a>
+                              <ul class="dropdown-menu">
+                                <li><a [routerLink]="['/admin/view_users']">Users</a></li>
+                                <li><a [routerLink]="['/admin/add_user']">New</a></li>
+                              </ul>
+                        </li>
                         <li>
                             <a (click)="logout()" style="cursor:pointer">
                                 Log out [ {{_info[0]?.first_name}} ]

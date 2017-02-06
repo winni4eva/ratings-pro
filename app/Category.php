@@ -10,17 +10,13 @@ use App\Image;
 class Category extends Model
 {
 
-    protected $fillable = ['name','branch_id','image_id'];
+    protected $fillable = ['name','image_id'];
 
 
     public function setNameAttribute($value){
 
         $this->attributes['name'] = ucfirst( strtolower( $value ) ); 
 
-    }
-
-    public function branch(){
-        return $this->belongsTo(Branch::class);
     }
 
     public function surveys(){

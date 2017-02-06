@@ -17,11 +17,10 @@ class Survey extends Model
      * @var array
      */
     protected $fillable = [
-        'category_id', 'title', 'active'
+        'category_id', 'title'
     ];
 
     public function branches(){
-        //return $this->belongsTo(Branch::class);
         return $this->belongsToMany(Branch::class, 'branch_surveys');
     }
 

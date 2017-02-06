@@ -20,7 +20,7 @@ class UserRepo implements UserRepoInterface
      */
     public function save(array $request)
     {
-        return $this->model->create([
+        $user = $this->model->create([
             'email' => $request['email'],
             'first_name' => $request['first_name'],
             'last_name' => $request['last_name'],
@@ -29,6 +29,10 @@ class UserRepo implements UserRepoInterface
                             ? bcrypt($request["passwords"]['password']) 
                             : bcrypt($request['password']),
         ]);
+
+        $user->branchUser()->create(['branch_id' => $request['branch_id'], 'admin' => $request['admin']]);
+
+        return $user;
     }
 
     /**
@@ -42,12 +46,12 @@ class UserRepo implements UserRepoInterface
 
         if(collect($fields)->count()>0)
         {
-            foreach($fields as $field) $query = $this->model->where($field, $request[$field]);
+            foreach($fields as $field) $query = $this->model->where($field, $request[$field])->with(['branchUser']);
 
             return $query->get();
         }
 
-        return $this->model->all();
+        return $this->model->with(['branchUser'])->get();
     
     }
 
@@ -165,8 +169,6 @@ class UserRepo implements UserRepoInterface
         ])
         ->where('branches.id', $user->branchId)
         ->get();
-
-        //logger($result);
         
         return [ $result, $user->branchId]; 
     
