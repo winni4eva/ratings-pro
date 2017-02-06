@@ -50,7 +50,7 @@ class BranchRepo implements BranchRepoInterface
      * @param bool $admin
      * @return mixed
      */
-    public function saveBranchUser(User $user, array $request, bool $admin = false){
+    public function saveBranchUser(User $user, array $request, $admin = false){
         $branch = $user->branches()->firstOrCreate($request);
 
         if($admin) $user->branches()->sync([$branch->id => [ 'admin' => $admin] ], false);
