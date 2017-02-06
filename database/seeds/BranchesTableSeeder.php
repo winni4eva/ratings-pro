@@ -14,7 +14,12 @@ class BranchesTableSeeder extends Seeder
     {
         Branch::getQuery()->delete();
 
-        $branches = ['name' => 'Spintex','name' => 'Ring Road','name' => 'Achimota','name' => 'Tema'];
+        $branches = [
+            ['name' => 'Spintex'],
+            ['name' => 'Ring Road'],
+            ['name' => 'Achimota'],
+            ['name' => 'Tema']
+        ];
             
         // Loop through each user above and create the record for them in the database
         foreach ($branches as $branch){
