@@ -30,6 +30,6 @@ interface BranchRepoInterface
      * @param bool $admin
      * @return mixed
      */
-    public function saveBranchUser(User $user, array $request, $admin = false);
+    public function saveBranchUser(User $user, array $request, bool $admin);
 
 }
