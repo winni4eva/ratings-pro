@@ -49,11 +49,17 @@ class LoginController extends Controller
     {
         $credentials = $request->only('email','password');
 
-        logger("I made it to login");
-
         //if($token = Auth::attempt($credentials))
-        if ($token = $this->guard()->attempt($credentials))
-            return $this->sendLoggedInResponse($request, $token);
+        if ($token = $this->guard()->attempt($credentials)){
+            
+            //return $this->sendLoggedInResponse($request, $token);
+            
+            $user = $this->userService->getUserBranches($this->guard()->user()->id);
+            
+            logger($token);
+            
+            return response()->json(compact(['user','token']));
+        }
 
         return $this->sendFailedLoginResponse($request);
 
@@ -76,6 +82,7 @@ class LoginController extends Controller
         //$user = Auth::setToken('YourJWTAuthToken')->user();
     
         //return $this->authenticated($request, $user, $token);
+        logger($token);
         return response()->json(compact(['user','token']));
     }
 
