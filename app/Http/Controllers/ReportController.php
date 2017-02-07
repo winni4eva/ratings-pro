@@ -21,10 +21,13 @@ class ReportController extends Controller
     {
         //logger( $this->getDateTimeDate( $request->get('from') )->format('Y-m-d') );
         $report = [];
+        $raw = [];
     
         switch ($request->get('tab')) {
             case 'Overview':
-                $report = $this->reportService->getOverview( $request->all() );
+                //$report = $this->reportService->getOverview( $request->all() );
+                $report = $this->reportService->getSurveys( $request->all() );
+                $raw = $this->reportService->getRawDataOverview( $request->all() );
                 //$report = $this->reportService->getSurveys( $request->all() );
                 //$report = $this->reportService->getSurveys( $request->all() );
                 break;
@@ -35,13 +38,13 @@ class ReportController extends Controller
                 $report = $this->reportService->getRatings( $request->all() );
                 break;
             case 'Branches':
-                # code...
+                $report = $this->reportService->getOverview( $request->all() );
                 break;
             default:
                 # code...
                 break;
         }
-        return response()->json(compact('report'),200);
+        return response()->json(compact('report','raw'),200);
     }
 
     protected function getDateTimeDate($period, $format = 'Y-m-d H:i:s'){

@@ -56,8 +56,6 @@ class LoginController extends Controller
             
             $user = $this->userService->getUserBranches($this->guard()->user()->id);
             
-            logger($token);
-            
             return response()->json(compact(['user','token']));
         }
 

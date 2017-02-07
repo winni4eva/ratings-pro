@@ -44,4 +44,8 @@ class ReportService
         return $this->surveyRepo->getSurveyRatingsReport( $request );
     }
 
+    public function getRawDataOverview(array $request){
+        return $this->ratingRepo->getRatingrawDataReport( $request );
+    }
+
 }

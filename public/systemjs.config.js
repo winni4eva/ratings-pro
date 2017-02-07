@@ -24,7 +24,9 @@
             'angular2-notifications': 'angular2-notifications',
             'underscore': 'underscore',
             'mydatepicker': 'mydatepicker',
-            'angular2-datatable': 'angular2-datatable'
+            'angular2-datatable': 'angular2-datatable',
+            'lodash':'lodash',
+            '@swimlane/ngx-datatable':'@swimlane/ngx-datatable'
         },
         // packages tells the System loader how to load when no filename and/or no extension
         packages: {
@@ -48,11 +50,19 @@
                 defaultExtension: 'js'
             },
             'mydatepicker':{ 
-               main: '/dist/my-date-picker.module.js',
+                main: '/dist/my-date-picker.module.js',
                 defaultExtension: 'js'
             },
             'angular2-datatable': {
                 main: 'index.js',
+                defaultExtension: 'js'
+            },
+            'lodash': {
+                main: '/lodash.js',
+                defaultExtension: 'js'
+            },
+            '@swimlane/ngx-datatable': {
+                main: 'release/index.js',
                 defaultExtension: 'js'
             }
         }

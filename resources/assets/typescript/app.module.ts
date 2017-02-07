@@ -68,6 +68,8 @@ import { MyDatePickerModule } from 'mydatepicker';
 //import { MODAL_DIRECTIVES, ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { ModalService } from './shared/modal/modal.service';
 //import { DataTableModule } from "angular2-datatable";
+//import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+//import { DataFilterPipe } from './shared/pipes/data-filter.pipe';
 
 @NgModule({
     imports:      [ 

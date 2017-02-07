@@ -59,4 +59,33 @@ class RatingRepo implements RatingRepoInterface
         return [];
     }
 
+    protected function getDateTimeDate($period, $format = 'Y-m-d H:i:s'){
+        return new \DateTime( date( $format, strtotime( $period ) ) );
+    }
+
+    public function getRatingrawDataReport(array $request){
+        $ratings = $this->model->with(
+            [
+                'survey',
+                'previousResponse',
+                'question',
+                'branch',
+                'response.rater.image'
+            ]);
+        
+        if(collect($request)->get('from') && collect($request)->get('to')){
+            $ratings = $ratings->whereBetween(
+                                'created_at', 
+                                [
+                                    $this->getDateTimeDate( $request['from'])->format('Y-m-d H:i:s'), 
+                                    $this->getDateTimeDate( $request['to'])->format('Y-m-d H:i:s')
+                                ]
+                            );
+        }
+
+        logger( $this->getDateTimeDate( $request['from'])->format('Y-m-d H:i:s') );
+
+        return $ratings->get();            
+    }
+
 }

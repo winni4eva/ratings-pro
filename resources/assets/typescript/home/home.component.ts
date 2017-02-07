@@ -63,17 +63,13 @@ import { CategoryService } from '../admin2/category/category.service';
                                     {{_questions[_currentQuestion]?.question}}
                                 </p>
                             </div>
-                            <!--<p><a (change)="testNextQuestion(3)" class="btn btn-default">test</a></p>-->
+                            
                             <div style="width:150%;margin-top:-180px">
                                     <ul>
                                         <li style="margin:0.1%" *ngFor="let answer of _questions[_currentQuestion]?.answers">
-                                            <a (click)="getNextQuestion(answer?.response?.id);onEvent($event)" style="cursor:pointer"> 
+                                            <a (click)="getNextQuestion(answer?.response?.id)" style="cursor:pointer"> 
                                             <img class="img-thumbnail" style="z-index:8" [src]="answer?.response?.rater?.image?.src" alt="Image" *ngIf="answer?.response?.rater"> 
-                                            
-                                            <div class="btn active" style="margin:0px;border:2px solid black">
-                                                <input type="checkbox" name='email1' checked style="visibility:hidden"> 
-                                                <span>{{answer?.response?.name}}</span>
-                                            </div>
+                                            <span>{{answer?.response?.name}}</span>
                                             </a>                               
                                         </li>
                                     </ul>
@@ -182,7 +178,7 @@ export class HomeComponent implements OnInit{
         this._tests = [];
         
         for(let survey of this._surveys){
-            if(survey.category_id === categoryId && survey.active == 1){
+            if(survey.category_id === categoryId){
                 this._questions = survey.questions;
                 this._surveyId = survey.id;
                 this.nextStep();
@@ -298,15 +294,6 @@ export class HomeComponent implements OnInit{
         //     },
         //     error => console.log(error)
         // );
-    }
-
-    testNextQuestion(id){
-        console.log(`Answer is => ${id}`);
-    }
-
-    onEvent(event) {
-        console.log('Stopping propagation');
-        event.stopPropagation();
     }
 
 

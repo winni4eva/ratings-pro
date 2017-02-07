@@ -152,6 +152,8 @@ System.register(['@angular/core', '@angular/http', '@angular/platform-browser', 
             }],
         execute: function() {
             //import { DataTableModule } from "angular2-datatable";
+            //import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+            //import { DataFilterPipe } from './shared/pipes/data-filter.pipe';
             AppModule = (function () {
                 function AppModule() {
                 }

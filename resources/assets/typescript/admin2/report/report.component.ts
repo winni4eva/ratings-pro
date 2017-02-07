@@ -51,18 +51,20 @@ import { FileService } from '../../shared/file-generator/file.service';
                     <li class="active">
                         <a  href="#1a" data-toggle="tab" (click)="clickedTab='Overview';updateReport()">Overview</a>
                     </li>
+                    <!--
                     <li>
                         <a href="#2a" data-toggle="tab" (click)="clickedTab='Surveys';updateReport()">Surveys</a>
                     </li>
                     <li>
                         <a href="#3a" data-toggle="tab" (click)="clickedTab='Ratings';updateReport()">Ratings</a>
                     </li>
+                    -->
                     <li>
                         <a href="#4a" data-toggle="tab" (click)="clickedTab='Branches';updateReport()">Branches</a>
                     </li>
                 </ul>
 
-                <div class="img-thumbnail" style="width:200%">
+                <div class="img-thumbnail" style="width:200%" *ngIf="clickedTab=='Overview'">
                     <a class="btn btn-primary pull-left" (click)="changeReportType('raw')">Raw Data</a>
                     <a class="btn btn-primary pull-left" (click)="changeReportType('chart')">Chart</a>
 
@@ -72,47 +74,61 @@ import { FileService } from '../../shared/file-generator/file.service';
 
                 <div class="tab-content clearfix img-thumbnail" style="width:200%">
 
+                    <div class="pull-right" *ngIf="clickedTab=='Overview' && _tabOptions[clickedTab]=='raw'">
+                        <a (click)="export('pdf')" class="btn btn-default">Export To PDF</a>
+                        <a (click)="export('excel')" class="btn btn-default">Export To Excel</a>
+                    </div>
+
                     <div class="tab-pane active" id="1a" *ngIf="clickedTab=='Overview' && _tabOptions[clickedTab]=='chart'">
-                        <zingchart *ngFor="let chart of barcharts" [chart]="chart" ></zingchart>
+                        <zingchart *ngFor="let chart of piecharts" [chart]="chart" ></zingchart>
                     </div>
 
                     <div class="tab-pane active" id="1a" *ngIf="clickedTab=='Overview' && _tabOptions[clickedTab]=='raw'">
                         <div class="content table-responsive table-full-width">
+
                             <table class="table table-hover table-striped">
                                 <thead>
                                     <th style="color:black">Questionaire</th>
-                                    <th style="color:black">Previous Response</th>
-                                    <th style="color:black">Response</th>
-                                    <th style="color:black">Rater</th>
-                                    <th style="color:black">Date</th>
+                                    <th style="color:black">Branch</th>
+                                    <th style="color:black">Previous Answer</th>
+                                    <th style="color:black">Answer</th>
+                                    <th style="color:black">Score</th>
+                                    <th style="color:black">Icon</th>
+                                    <th style="color:black">Date Created</th>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td style="color:black">testing</td>
-                                        <td style="color:black">testing</td>
-                                        <td style="color:black">testing</td>
-                                        <td style="color:black">testing</td>
-                                        <td style="color:black">testing</td>
+                                    <tr *ngFor="let data of overViewtable">
+                                        <td style="color:black">{{data?.survey?.title}}</td>
+                                        <td style="color:black">{{data?.branch?.name}}</td>
+                                        <td style="color:black">{{data?.previous_response?.name}}</td>
+                                        <td style="color:black">{{data?.response?.name}}</td>
+                                        <td style="color:black">{{data?.response?.rater?.score}}</td>
+                                        <td style="color:black">
+                                            <img class="img-thumbnail" [src]="data?.response?.rater?.image?.src" alt="Image">
+                                        </td>
+                                        <td style="color:black">{{data?.created_at}}</td>
                                     </tr>
                                 </tbody>
                             </table>
+
                         </div>
                     </div>
-                    
+                    <!--
                     <div class="tab-pane" id="2a" *ngIf="clickedTab=='Surveys'">
                         <div class="pull-right">
                             <a (click)="export('pdf')" class="btn btn-default">Export To PDF</a>
                             <a (click)="export('excel')" class="btn btn-default">Export To Excel</a>
                         </div>
-                        <zingchart *ngFor="let chart of piecharts" [chart]="chart" ></zingchart>
+                        <zingchart *ngFor="let chart of charts" [chart]="chart" ></zingchart>
                     </div>
-                
+                    -->
+                    <!--
                     <div class="tab-pane" id="3a" *ngIf="clickedTab=='Ratings'">
                         <zingchart *ngFor="let chart of stackedbarcharts" [chart]="chart" ></zingchart>
                     </div>
-                    
+                    -->
                     <div class="tab-pane" id="4a" *ngIf="clickedTab=='Branches'">
-                        <zingchart *ngFor="let chart of charts" [chart]="chart" ></zingchart>
+                        <zingchart *ngFor="let chart of barcharts" [chart]="chart" ></zingchart>
                     </div>
 
                 </div>
@@ -164,6 +180,18 @@ import { FileService } from '../../shared/file-generator/file.service';
      private fromDatePickerSet; 
 
      private dateFilter: Array<any> = [];
+
+     overViewtable;
+
+     public data;
+     
+     public filterQuery = "";
+     
+     public rowsOnPage = 10;
+     
+     public sortBy = "email";
+     
+     public sortOrder = "asc";
 
      constructor (
                     private _reportService: ReportService, 
@@ -251,8 +279,14 @@ import { FileService } from '../../shared/file-generator/file.service';
             this.dateFilter=[];
       }
 
-      ngOnDestroy(){
+      ngOnDestroy(){}
 
+      public toInt(num: string) {
+            return +num;
+      }
+
+      public sortByWordLength = (a: any) => {
+            return a.city.length;
       }
 
       getReport(filter){
@@ -260,9 +294,10 @@ import { FileService } from '../../shared/file-generator/file.service';
         this._reportService.getReport(filter).subscribe(
             result => {
                 if(this.clickedTab=='Overview') {
-                    this.barcharts = result.report;
-                }else if(this.clickedTab=='Surveys'){
                     this.piecharts= result.report;
+                    this.overViewtable = result.raw;
+                }else if(this.clickedTab=='Branches'){
+                    this.barcharts = result.report;
                 }
                 this._notification.success('Success', 'Reports updated...')
             },
