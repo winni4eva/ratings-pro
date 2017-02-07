@@ -112,7 +112,8 @@ export class AddUserComponent implements OnInit {
         this._branchService.getBranches().subscribe(
             result => this._branches = result.branches,
             error => this._notification.error('Error', error)
-        )
+        );
+        
         this.form = this._fb.group({
             first_name: ['', Validators.required],
             last_name: ['', Validators.required],

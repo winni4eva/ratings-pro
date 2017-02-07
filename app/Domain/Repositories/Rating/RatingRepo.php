@@ -64,15 +64,20 @@ class RatingRepo implements RatingRepoInterface
     }
 
     public function getRatingrawDataReport(array $request){
-        $ratings = $this->model->with(
-            [
-                'survey',
-                'previousResponse',
-                'question',
-                'branch',
-                'response.rater.image'
-            ]);
+           
+            $ratings = $this->model->with(
+                        [
+                            'survey',
+                            'previousResponse',
+                            'question',
+                            'branch',
+                            'response.rater.image'
+                        ]);
         
+        if(collect($request)->get('branchId')){
+            $ratings = $ratings->where('branch_id', collect($request)->get('branchId'));
+        }
+
         if(collect($request)->get('from') && collect($request)->get('to')){
             $ratings = $ratings->whereBetween(
                                 'created_at', 
@@ -82,8 +87,6 @@ class RatingRepo implements RatingRepoInterface
                                 ]
                             );
         }
-
-        logger( $this->getDateTimeDate( $request['from'])->format('Y-m-d H:i:s') );
 
         return $ratings->get();            
     }

@@ -1,4 +1,4 @@
-System.register(['@angular/core', './report.service', 'angular2-notifications', '../../shared/file-generator/file.service'], function(exports_1, context_1) {
+System.register(['@angular/core', './report.service', 'angular2-notifications', '../../shared/file-generator/file.service', '../branch/branch.service'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['@angular/core', './report.service', 'angular2-notifications', 
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, report_service_1, angular2_notifications_1, file_service_1;
+    var core_1, report_service_1, angular2_notifications_1, file_service_1, branch_service_1;
     var ReportComponent;
     return {
         setters:[
@@ -25,13 +25,17 @@ System.register(['@angular/core', './report.service', 'angular2-notifications', 
             },
             function (file_service_1_1) {
                 file_service_1 = file_service_1_1;
+            },
+            function (branch_service_1_1) {
+                branch_service_1 = branch_service_1_1;
             }],
         execute: function() {
             ReportComponent = (function () {
-                function ReportComponent(_reportService, _notification, _fileService) {
+                function ReportComponent(_reportService, _notification, _fileService, _branchService) {
                     this._reportService = _reportService;
                     this._notification = _notification;
                     this._fileService = _fileService;
+                    this._branchService = _branchService;
                     this._options = {
                         position: ["top", "right"],
                         timeOut: 9000,
@@ -131,8 +135,11 @@ System.register(['@angular/core', './report.service', 'angular2-notifications', 
                     ];
                 }
                 ReportComponent.prototype.ngOnInit = function () {
+                    var _this = this;
+                    this._branchService.getBranches().subscribe(function (result) { return _this._branches = result.branches; }, function (error) { return _this._notification.error('Error', error); });
                     //Fetch Overview Report
                     var obj = {};
+                    obj['branchId'] = '';
                     obj['from'] = '';
                     obj['tab'] = this.clickedTab;
                     obj['to'] = '';
@@ -141,6 +148,20 @@ System.register(['@angular/core', './report.service', 'angular2-notifications', 
                     this.dateFilter = [];
                 };
                 ReportComponent.prototype.ngOnDestroy = function () { };
+                ReportComponent.prototype.filter = function (option) {
+                    if (option == 'branch') {
+                        console.log('Made it here');
+                        var obj = {};
+                        obj['branchId'] = this.filterOption;
+                        obj['tab'] = this.clickedTab;
+                        obj['to'] = '';
+                        obj['from'] = '';
+                        this.dateFilter.push(obj);
+                        this.getReport(this.dateFilter);
+                        this.dateFilter = [];
+                        console.log(this.filterOption);
+                    }
+                };
                 ReportComponent.prototype.toInt = function (num) {
                     return +num;
                 };
@@ -167,6 +188,7 @@ System.register(['@angular/core', './report.service', 'angular2-notifications', 
                     }
                     else if (option == 'to') {
                         var obj = {};
+                        obj['branchId'] = '';
                         obj['from'] = this.fromDatePickerSet;
                         obj['tab'] = this.clickedTab;
                         obj['to'] = new Date(event.jsdate).toLocaleDateString();
@@ -186,6 +208,7 @@ System.register(['@angular/core', './report.service', 'angular2-notifications', 
                 };
                 ReportComponent.prototype.updateReport = function () {
                     var obj = {};
+                    obj['branchId'] = '';
                     obj['from'] = new Date().toLocaleDateString();
                     obj['tab'] = this.clickedTab;
                     obj['to'] = new Date().toLocaleDateString();
@@ -200,9 +223,9 @@ System.register(['@angular/core', './report.service', 'angular2-notifications', 
                 ReportComponent = __decorate([
                     core_1.Component({
                         selector: 'my-report',
-                        template: "\n       <style>\n            #exTab1 .tab-content {\n            color : white;\n            background-color: white;\n            padding : 5px 15px;\n            }\n\n            #exTab2 h3 {\n            color : white;\n            background-color: white;\n            padding : 5px 15px;\n            }\n\n            /* remove border radius for the tab */\n\n            #exTab1 .nav-pills > li > a {\n            border-radius: 0;\n            }\n\n            /* change border radius for the tab , apply corners on top*/\n\n            #exTab3 .nav-pills > li > a {\n            border-radius: 4px 4px 0 0 ;\n            }\n\n            #exTab3 .tab-content {\n            color : white;\n            background-color: white;\n            padding : 5px 15px;\n            }\n       </style>\n          \n          <simple-notifications [options]=\"_options\"></simple-notifications>\n\n          <!--<zingchart [chart]=\"lineChart\"></zingchart>-->\n\n            <my-content [title]=\"'Report'\">\n\n                <div id=\"exTab1\" class=\"\">\t\n                <ul  class=\"nav nav-pills\">\n                    <li class=\"active\">\n                        <a  href=\"#1a\" data-toggle=\"tab\" (click)=\"clickedTab='Overview';updateReport()\">Overview</a>\n                    </li>\n                    <!--\n                    <li>\n                        <a href=\"#2a\" data-toggle=\"tab\" (click)=\"clickedTab='Surveys';updateReport()\">Surveys</a>\n                    </li>\n                    <li>\n                        <a href=\"#3a\" data-toggle=\"tab\" (click)=\"clickedTab='Ratings';updateReport()\">Ratings</a>\n                    </li>\n                    -->\n                    <li>\n                        <a href=\"#4a\" data-toggle=\"tab\" (click)=\"clickedTab='Branches';updateReport()\">Branches</a>\n                    </li>\n                </ul>\n\n                <div class=\"img-thumbnail\" style=\"width:200%\" *ngIf=\"clickedTab=='Overview'\">\n                    <a class=\"btn btn-primary pull-left\" (click)=\"changeReportType('raw')\">Raw Data</a>\n                    <a class=\"btn btn-primary pull-left\" (click)=\"changeReportType('chart')\">Chart</a>\n\n                    <my-date-picker [options]=\"myDatePickerOptions\" (dateChanged)=\"onDateChanged($event,'to')\" *ngIf=\"fromDatePickerSet\" class=\"pull-right\"></my-date-picker>\n                    <my-date-picker [options]=\"myDatePickerOptions\" (dateChanged)=\"onDateChanged($event,'from')\" class=\"pull-right\"></my-date-picker>\n                </div>\n\n                <div class=\"tab-content clearfix img-thumbnail\" style=\"width:200%\">\n\n                    <div class=\"pull-right\" *ngIf=\"clickedTab=='Overview' && _tabOptions[clickedTab]=='raw'\">\n                        <a (click)=\"export('pdf')\" class=\"btn btn-default\">Export To PDF</a>\n                        <a (click)=\"export('excel')\" class=\"btn btn-default\">Export To Excel</a>\n                    </div>\n\n                    <div class=\"tab-pane active\" id=\"1a\" *ngIf=\"clickedTab=='Overview' && _tabOptions[clickedTab]=='chart'\">\n                        <zingchart *ngFor=\"let chart of piecharts\" [chart]=\"chart\" ></zingchart>\n                    </div>\n\n                    <div class=\"tab-pane active\" id=\"1a\" *ngIf=\"clickedTab=='Overview' && _tabOptions[clickedTab]=='raw'\">\n                        <div class=\"content table-responsive table-full-width\">\n\n                            <table class=\"table table-hover table-striped\">\n                                <thead>\n                                    <th style=\"color:black\">Questionaire</th>\n                                    <th style=\"color:black\">Branch</th>\n                                    <th style=\"color:black\">Previous Answer</th>\n                                    <th style=\"color:black\">Answer</th>\n                                    <th style=\"color:black\">Score</th>\n                                    <th style=\"color:black\">Icon</th>\n                                    <th style=\"color:black\">Date Created</th>\n                                </thead>\n                                <tbody>\n                                    <tr *ngFor=\"let data of overViewtable\">\n                                        <td style=\"color:black\">{{data?.survey?.title}}</td>\n                                        <td style=\"color:black\">{{data?.branch?.name}}</td>\n                                        <td style=\"color:black\">{{data?.previous_response?.name}}</td>\n                                        <td style=\"color:black\">{{data?.response?.name}}</td>\n                                        <td style=\"color:black\">{{data?.response?.rater?.score}}</td>\n                                        <td style=\"color:black\">\n                                            <img class=\"img-thumbnail\" [src]=\"data?.response?.rater?.image?.src\" alt=\"Image\">\n                                        </td>\n                                        <td style=\"color:black\">{{data?.created_at}}</td>\n                                    </tr>\n                                </tbody>\n                            </table>\n\n                        </div>\n                    </div>\n                    <!--\n                    <div class=\"tab-pane\" id=\"2a\" *ngIf=\"clickedTab=='Surveys'\">\n                        <div class=\"pull-right\">\n                            <a (click)=\"export('pdf')\" class=\"btn btn-default\">Export To PDF</a>\n                            <a (click)=\"export('excel')\" class=\"btn btn-default\">Export To Excel</a>\n                        </div>\n                        <zingchart *ngFor=\"let chart of charts\" [chart]=\"chart\" ></zingchart>\n                    </div>\n                    -->\n                    <!--\n                    <div class=\"tab-pane\" id=\"3a\" *ngIf=\"clickedTab=='Ratings'\">\n                        <zingchart *ngFor=\"let chart of stackedbarcharts\" [chart]=\"chart\" ></zingchart>\n                    </div>\n                    -->\n                    <div class=\"tab-pane\" id=\"4a\" *ngIf=\"clickedTab=='Branches'\">\n                        <zingchart *ngFor=\"let chart of barcharts\" [chart]=\"chart\" ></zingchart>\n                    </div>\n\n                </div>\n\n            </div>\n\n        </my-content>\n       "
+                        template: "\n       <style>\n            #exTab1 .tab-content {\n            color : white;\n            background-color: white;\n            padding : 5px 15px;\n            }\n\n            #exTab2 h3 {\n            color : white;\n            background-color: white;\n            padding : 5px 15px;\n            }\n\n            /* remove border radius for the tab */\n\n            #exTab1 .nav-pills > li > a {\n            border-radius: 0;\n            }\n\n            /* change border radius for the tab , apply corners on top*/\n\n            #exTab3 .nav-pills > li > a {\n            border-radius: 4px 4px 0 0 ;\n            }\n\n            #exTab3 .tab-content {\n            color : white;\n            background-color: white;\n            padding : 5px 15px;\n            }\n       </style>\n          \n          <simple-notifications [options]=\"_options\"></simple-notifications>\n\n          <!--<zingchart [chart]=\"lineChart\"></zingchart>-->\n\n            <my-content [title]=\"'Report'\">\n\n                <div id=\"exTab1\" class=\"\">\t\n                <ul  class=\"nav nav-pills\">\n                    <li class=\"active\">\n                        <a  href=\"#1a\" data-toggle=\"tab\" (click)=\"clickedTab='Overview';updateReport()\">Overview</a>\n                    </li>\n                    <!--\n                    <li>\n                        <a href=\"#2a\" data-toggle=\"tab\" (click)=\"clickedTab='Surveys';updateReport()\">Surveys</a>\n                    </li>\n                    <li>\n                        <a href=\"#3a\" data-toggle=\"tab\" (click)=\"clickedTab='Ratings';updateReport()\">Ratings</a>\n                    </li>\n                    -->\n                    <li>\n                        <a href=\"#4a\" data-toggle=\"tab\" (click)=\"clickedTab='Branches';updateReport()\">Branches</a>\n                    </li>\n                </ul>\n\n                <div class=\"img-thumbnail\" style=\"width:200%\" *ngIf=\"clickedTab=='Overview'\">\n                    <a class=\"btn btn-primary pull-left\" (click)=\"changeReportType('raw')\">Raw Data</a>\n                    <a class=\"btn btn-primary pull-left\" (click)=\"changeReportType('chart')\">Chart</a>\n\n                    <div class=\"form-group pull-left\">\n                        <label>Branch</label>\n                        <select class=\"form-control\" [(ngModel)]=\"filterOption\" (change)=\"filter('branch')\">\n                            <option [value]=\"''\">--Select Branch--</option>\n                            <option [value]=\"branch.id\" *ngFor=\"let branch of _branches\">{{branch.name}}</option>\n                        </select>\n                    </div>\n\n                    <my-date-picker [options]=\"myDatePickerOptions\" (dateChanged)=\"onDateChanged($event,'to')\" *ngIf=\"fromDatePickerSet\" class=\"pull-right\"></my-date-picker>\n                    <my-date-picker [options]=\"myDatePickerOptions\" (dateChanged)=\"onDateChanged($event,'from')\" class=\"pull-right\"></my-date-picker>\n                </div>\n\n                <div class=\"tab-content clearfix img-thumbnail\" style=\"width:200%\">\n\n                    <div class=\"pull-right\" *ngIf=\"clickedTab=='Overview' && _tabOptions[clickedTab]=='raw'\">\n                        <a (click)=\"export('pdf')\" class=\"btn btn-default\">Export To PDF</a>\n                        <a (click)=\"export('excel')\" class=\"btn btn-default\">Export To Excel</a>\n                    </div>\n\n                    <div class=\"tab-pane active\" id=\"1a\" *ngIf=\"clickedTab=='Overview' && _tabOptions[clickedTab]=='chart'\">\n                        <zingchart *ngFor=\"let chart of piecharts\" [chart]=\"chart\" ></zingchart>\n                    </div>\n\n                    <div class=\"tab-pane active\" id=\"1a\" *ngIf=\"clickedTab=='Overview' && _tabOptions[clickedTab]=='raw'\">\n                        <div class=\"content table-responsive table-full-width\">\n\n                            <table class=\"table table-hover table-striped\">\n                                <thead>\n                                    <th style=\"color:black\">Questionaire</th>\n                                    <th style=\"color:black\">Branch</th>\n                                    <th style=\"color:black\">Previous Answer</th>\n                                    <th style=\"color:black\">Answer</th>\n                                    <th style=\"color:black\">Score</th>\n                                    <th style=\"color:black\">Icon</th>\n                                    <th style=\"color:black\">Date Created</th>\n                                </thead>\n                                <tbody>\n                                    <tr *ngFor=\"let data of overViewtable\">\n                                        <td style=\"color:black\">{{data?.survey?.title}}</td>\n                                        <td style=\"color:black\">{{data?.branch?.name}}</td>\n                                        <td style=\"color:black\">{{data?.previous_response?.name}}</td>\n                                        <td style=\"color:black\">{{data?.response?.name}}</td>\n                                        <td style=\"color:black\">{{data?.response?.rater?.score}}</td>\n                                        <td style=\"color:black\">\n                                            <img class=\"img-thumbnail\" [src]=\"data?.response?.rater?.image?.src\" alt=\"Image\">\n                                        </td>\n                                        <td style=\"color:black\">{{data?.created_at}}</td>\n                                    </tr>\n                                </tbody>\n                            </table>\n\n                        </div>\n                    </div>\n                    <!--\n                    <div class=\"tab-pane\" id=\"2a\" *ngIf=\"clickedTab=='Surveys'\">\n                        <div class=\"pull-right\">\n                            <a (click)=\"export('pdf')\" class=\"btn btn-default\">Export To PDF</a>\n                            <a (click)=\"export('excel')\" class=\"btn btn-default\">Export To Excel</a>\n                        </div>\n                        <zingchart *ngFor=\"let chart of charts\" [chart]=\"chart\" ></zingchart>\n                    </div>\n                    -->\n                    <!--\n                    <div class=\"tab-pane\" id=\"3a\" *ngIf=\"clickedTab=='Ratings'\">\n                        <zingchart *ngFor=\"let chart of stackedbarcharts\" [chart]=\"chart\" ></zingchart>\n                    </div>\n                    -->\n                    <div class=\"tab-pane\" id=\"4a\" *ngIf=\"clickedTab=='Branches'\">\n                        <zingchart *ngFor=\"let chart of barcharts\" [chart]=\"chart\" ></zingchart>\n                    </div>\n\n                </div>\n\n            </div>\n\n        </my-content>\n       "
                     }), 
-                    __metadata('design:paramtypes', [report_service_1.ReportService, angular2_notifications_1.NotificationsService, file_service_1.FileService])
+                    __metadata('design:paramtypes', [report_service_1.ReportService, angular2_notifications_1.NotificationsService, file_service_1.FileService, branch_service_1.BranchService])
                 ], ReportComponent);
                 return ReportComponent;
             }());

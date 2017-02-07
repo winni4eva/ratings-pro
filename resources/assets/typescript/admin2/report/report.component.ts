@@ -4,6 +4,7 @@ import { Chart } from '../chart/chart.model';
 import { ReportService } from './report.service';
 import { NotificationsService } from 'angular2-notifications';
 import { FileService } from '../../shared/file-generator/file.service';
+import { BranchService } from '../branch/branch.service';
 
    @Component({
        selector : 'my-report',
@@ -67,6 +68,14 @@ import { FileService } from '../../shared/file-generator/file.service';
                 <div class="img-thumbnail" style="width:200%" *ngIf="clickedTab=='Overview'">
                     <a class="btn btn-primary pull-left" (click)="changeReportType('raw')">Raw Data</a>
                     <a class="btn btn-primary pull-left" (click)="changeReportType('chart')">Chart</a>
+
+                    <div class="form-group pull-left">
+                        <label>Branch</label>
+                        <select class="form-control" [(ngModel)]="filterOption" (change)="filter('branch')">
+                            <option [value]="''">--Select Branch--</option>
+                            <option [value]="branch.id" *ngFor="let branch of _branches">{{branch.name}}</option>
+                        </select>
+                    </div>
 
                     <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event,'to')" *ngIf="fromDatePickerSet" class="pull-right"></my-date-picker>
                     <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event,'from')" class="pull-right"></my-date-picker>
@@ -168,6 +177,8 @@ import { FileService } from '../../shared/file-generator/file.service';
         selectionTxtFontSize: '16px'
     };
 
+     filterOption;
+
      private clickedTab = 'Overview';
 
      private _tabOptions ={
@@ -193,10 +204,13 @@ import { FileService } from '../../shared/file-generator/file.service';
      
      public sortOrder = "asc";
 
+     private _branches;
+
      constructor (
                     private _reportService: ReportService, 
                     private _notification: NotificationsService,
-                    private _fileService: FileService) {
+                    private _fileService: FileService,
+                    private _branchService: BranchService) {
 
         this.charts = [
           {
@@ -269,8 +283,14 @@ import { FileService } from '../../shared/file-generator/file.service';
       }
 
       ngOnInit(){
+          
+          this._branchService.getBranches().subscribe(
+                result => this._branches = result.branches,
+                error => this._notification.error('Error', error)
+            )
             //Fetch Overview Report
             var obj = {};
+            obj['branchId'] = '';
             obj['from'] = '';
             obj['tab'] = this.clickedTab;
             obj['to'] = '';
@@ -280,6 +300,21 @@ import { FileService } from '../../shared/file-generator/file.service';
       }
 
       ngOnDestroy(){}
+
+      filter(option){
+          if(option=='branch'){
+                console.log('Made it here');
+                var obj = {};
+                obj['branchId'] = this.filterOption;
+                obj['tab'] = this.clickedTab;
+                obj['to'] = '';
+                obj['from'] = '';
+                this.dateFilter.push(obj);
+                this.getReport(this.dateFilter);
+                this.dateFilter = [];
+                console.log(this.filterOption);
+          }
+      }
 
       public toInt(num: string) {
             return +num;
@@ -315,6 +350,7 @@ import { FileService } from '../../shared/file-generator/file.service';
             this.fromDatePickerSet = new Date(event.jsdate).toLocaleDateString();
         }else if(option=='to') { 
             var obj = {};
+            obj['branchId'] = '';
             obj['from'] = this.fromDatePickerSet;
             obj['tab'] = this.clickedTab;
             obj['to'] = new Date(event.jsdate).toLocaleDateString();
@@ -339,6 +375,7 @@ import { FileService } from '../../shared/file-generator/file.service';
 
     updateReport(){
         var obj = {};
+        obj['branchId'] = '';
         obj['from'] = new Date().toLocaleDateString();
         obj['tab'] = this.clickedTab;
         obj['to'] = new Date().toLocaleDateString();
