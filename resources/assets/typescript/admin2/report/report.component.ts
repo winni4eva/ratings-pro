@@ -113,7 +113,7 @@ import { BranchService } from '../branch/branch.service';
                                         <td style="color:black">{{data?.response?.name}}</td>
                                         <td style="color:black">{{data?.response?.rater?.score}}</td>
                                         <td style="color:black">
-                                            <img class="img-thumbnail" [src]="data?.response?.rater?.image?.src" alt="Image">
+                                            <img class="img-thumbnail" style="width:50px;height:50px" [src]="data?.response?.rater?.image?.src" alt="Image">
                                         </td>
                                         <td style="color:black">{{data?.created_at}}</td>
                                     </tr>

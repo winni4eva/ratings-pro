@@ -67,9 +67,12 @@ class FileController extends Controller
                         <tbody>
                             <tr>";
                    $template .= ($fileType == 'pdf')? '<td><strong>No.</strong></td>':'';
-                   $template .= "<td><strong>Branch</strong></td>
+                   $template .= "
+                                <td><strong>Questionaire</strong></td>
+                                <td><strong>Branch</strong></td>
                                 <td><strong>Question</strong></td>
                                 <td><strong>Answer</strong></td>
+                                <td><strong>Score</strong></td>
                                 <td><strong>Date</strong></td>
                             </tr>";
                             $num = 0; $myClass = 'odd';
@@ -78,9 +81,12 @@ class FileController extends Controller
                                 $myClass = ($num%2 == 0)? 'even' : 'odd';
                                 $template .= "<tr class='{$myClass}'>";
                                 $template .= ($fileType == 'pdf')? "<td>{$num}</td>":'';
-                                $template .= "<td>{$survey->branch_name}</td>
+                                $template .= "
+                                                <td>{$survey->title}</td>
+                                                <td>{$survey->branch_name}</td>
                                                 <td>{$survey->question}</td>
                                                 <td>{$survey->response_name}</td>
+                                                <td>{$survey->score}</td>
                                                 <td>{$survey->rating_date}</td>
                                             </tr>";
                                 //logger(collect($survey)->get(0));

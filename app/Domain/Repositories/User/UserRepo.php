@@ -192,10 +192,14 @@ class UserRepo implements UserRepoInterface
                                 )
                     ->leftjoin('questions', 'ratings.question_id', '=', 'questions.id')
                     ->leftjoin('responses', 'ratings.response_id', '=', 'responses.id')
+                    ->leftjoin('raters', 'responses.id', '=', 'raters.response_id')
                     ->leftjoin('branches', 'ratings.branch_id', '=', 'branches.id')
+                    ->leftjoin('surveys', 'ratings.survey_id', '=', 'surveys.id')
                     ->get(
                             [
                                 'questions.question',
+                                'surveys.title',
+                                'raters.score',
                                 'responses.name as response_name',
                                 'branches.name as branch_name',
                                 'ratings.created_at as rating_date'
