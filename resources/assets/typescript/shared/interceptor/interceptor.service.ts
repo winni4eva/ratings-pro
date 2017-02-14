@@ -61,7 +61,8 @@ export class CustomHttp extends Http{
                 localStorage.removeItem('rUser');
                 localStorage.removeItem('rAuth');
                 window.location.href='#/login';
-                return Observable.empty();
+                //return Observable.empty();
+                return Observable.throw(err);
             } else {
                 return Observable.throw(err);
             }

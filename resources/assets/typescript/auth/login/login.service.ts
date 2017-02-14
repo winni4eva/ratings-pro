@@ -52,7 +52,8 @@ export class LoginService {
   }
 
   private handleError (error: any) {
-      
+      if( JSON.parse(error._body).message ) return Observable.throw(JSON.parse(error._body).message);
+
       let errMsg = (error.message) ? error.message :
         error.status ? `${error.status} - ${error.statusText}` : 'Server error';
 

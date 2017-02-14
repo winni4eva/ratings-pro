@@ -102,13 +102,13 @@ export class LoginComponent implements OnInit {
 
         this._loginService.postLogin(model)
             .subscribe( response => {
-                    console.log(response);
+                    //console.log(response);
                     this._loginService.setAuthDetails(response);
                     this.router.navigate(['admin']); 
                 },
                 error => {
-                    this._notification.error('Error', error);
                     console.log(error);
+                    this._notification.error('Error', error);
                 }
             );
     }

@@ -80,7 +80,7 @@ class LoginController extends Controller
         //$user = Auth::setToken('YourJWTAuthToken')->user();
     
         //return $this->authenticated($request, $user, $token);
-        logger($token);
+        //logger($token);
         return response()->json(compact(['user','token']));
     }
 
@@ -93,7 +93,7 @@ class LoginController extends Controller
 
         //$user = $this->userService->getUserBranches(Auth::user()->id); 
         //$user = Auth::setToken('YourJWTAuthToken')->user();
-        logger($token);
+        //logger($token);
         return $this->authenticated($request, $user, $token);
     }
 
@@ -104,7 +104,7 @@ class LoginController extends Controller
 
     protected function sendFailedLoginResponse(Request $request)
     {
-        logger("I failed to login");
+        //logger("I failed to login");
         return response()->json([
             'message' => Lang::get('auth.failed'),
         ], 401);

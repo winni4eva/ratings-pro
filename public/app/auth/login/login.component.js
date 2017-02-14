@@ -63,8 +63,8 @@ System.register(['@angular/core', '@angular/forms', '../../shared/validator/cust
                         _this._loginService.setAuthDetails(response);
                         _this.router.navigate(['admin']);
                     }, function (error) {
-                        _this._notification.error('Error', error);
                         console.log(error);
+                        _this._notification.error('Error', error);
                     });
                 };
                 LoginComponent.prototype.logout = function () {

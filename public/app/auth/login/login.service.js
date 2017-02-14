@@ -61,6 +61,8 @@ System.register(['@angular/core', '@angular/http', 'rxjs/Observable', 'rxjs/Rx',
                     return res.json() || {};
                 };
                 LoginService.prototype.handleError = function (error) {
+                    if (JSON.parse(error._body).message)
+                        return Observable_1.Observable.throw(JSON.parse(error._body).message);
                     var errMsg = (error.message) ? error.message :
                         error.status ? error.status + " - " + error.statusText : 'Server error';
                     return Observable_1.Observable.throw(errMsg);

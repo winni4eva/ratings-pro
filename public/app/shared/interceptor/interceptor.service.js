@@ -71,7 +71,8 @@ System.register(['@angular/core', 'rxjs/Observable', '@angular/http', 'rxjs/Rx']
                             localStorage.removeItem('rUser');
                             localStorage.removeItem('rAuth');
                             window.location.href = '#/login';
-                            return Observable_1.Observable.empty();
+                            //return Observable.empty();
+                            return Observable_1.Observable.throw(err);
                         }
                         else {
                             return Observable_1.Observable.throw(err);
