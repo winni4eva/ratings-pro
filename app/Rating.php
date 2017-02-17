@@ -32,4 +32,16 @@ class Rating extends Model
     public function survey(){
         return $this->belongsTo(Survey::class);
     }
+
+    public function responsesCount(){
+        return $this->response()
+                ->selectRaw('id, count(*) as votes')
+                ->groupBy('id');
+    }
+
+    public function previousResponseName(){
+        return $this->previousResponse()
+                ->selectRaw('id, name, distinct(name) as selectable')
+                ->groupBy('name');
+    }
 }

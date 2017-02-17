@@ -5,6 +5,7 @@ import { ReportService } from './report.service';
 import { NotificationsService } from 'angular2-notifications';
 import { FileService } from '../../shared/file-generator/file.service';
 import { BranchService } from '../branch/branch.service';
+import { SurveyService } from '../survey/survey.service';
 
    @Component({
        selector : 'my-report',
@@ -52,33 +53,40 @@ import { BranchService } from '../branch/branch.service';
                     <li class="active">
                         <a  href="#1a" data-toggle="tab" (click)="clickedTab='Overview';updateReport()">Overview</a>
                     </li>
-                    <!--
-                    <li>
-                        <a href="#2a" data-toggle="tab" (click)="clickedTab='Surveys';updateReport()">Surveys</a>
-                    </li>
-                    <li>
-                        <a href="#3a" data-toggle="tab" (click)="clickedTab='Ratings';updateReport()">Ratings</a>
-                    </li>
-                    -->
                     <li>
                         <a href="#4a" data-toggle="tab" (click)="clickedTab='Branches';updateReport()">Branches</a>
                     </li>
+                    <!--
+                    <li>
+                        <a href="#3a" data-toggle="tab" (click)="clickedTab='Ratings';updateReport()">Ratings</a>
+                    </li>
+                    
+                    <li>
+                        <a href="#2a" data-toggle="tab" (click)="clickedTab='Surveys';updateReport()">Surveys</a>
+                    </li>
+                    -->
                 </ul>
 
                 <div class="img-thumbnail" style="width:200%" *ngIf="clickedTab=='Overview'">
                     <a class="btn btn-primary pull-left" (click)="changeReportType('raw')">Raw Data</a>
                     <a class="btn btn-primary pull-left" (click)="changeReportType('chart')">Chart</a>
 
-                    <div class="form-group pull-left">
-                        <label>Branch</label>
-                        <select class="form-control" [(ngModel)]="filterOption" (change)="filter('branch')">
-                            <option [value]="''">--Select Branch--</option>
+                    <div class="form-group pull-left" *ngIf="this._tabOptions[clickedTab]=='raw'">
+                        <select class="form-control" [(ngModel)]="selectedBranchId" (change)="filter('branch')">
+                            <option [value]="''" [selected]="!selectedBranchId">--Filter Branch--</option>
                             <option [value]="branch.id" *ngFor="let branch of _branches">{{branch.name}}</option>
                         </select>
                     </div>
 
+                    <div class="form-group pull-left" *ngIf="this._tabOptions[clickedTab]=='raw'">
+                        <select class="form-control" [(ngModel)]="selectedSurveyId" (change)="filter('survey')">
+                            <option [value]="''" [selected]="!selectedSurveyId">--Filter Survey--</option>
+                            <option [value]="survey.id" *ngFor="let survey of _surveys">{{survey.title}}</option>
+                        </select>
+                    </div>
+
                     <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event,'to')" *ngIf="fromDatePickerSet" class="pull-right"></my-date-picker>
-                    <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event,'from')" class="pull-right"></my-date-picker>
+                    <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event,'from')" *ngIf="this._tabOptions[clickedTab]=='raw'" class="pull-right"></my-date-picker>
                 </div>
 
                 <div class="tab-content clearfix img-thumbnail" style="width:200%">
@@ -122,6 +130,26 @@ import { BranchService } from '../branch/branch.service';
 
                         </div>
                     </div>
+
+                    <div class="tab-pane" id="4a" *ngIf="clickedTab=='Branches'">
+                        <zingchart *ngFor="let chart of barcharts" [chart]="chart" ></zingchart>
+                    </div>
+
+                    <div class="tab-pane" id="3a" *ngIf="clickedTab=='Ratings'">
+                        <div class="content table-responsive table-full-width">
+                            <table class="table table-hover table-striped">
+                                <thead>
+                                    <th style="color:black">Questionaire</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let data of [1,2,3]">
+                                        <td style="color:black">{{data}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                     <!--
                     <div class="tab-pane" id="2a" *ngIf="clickedTab=='Surveys'">
                         <div class="pull-right">
@@ -129,16 +157,9 @@ import { BranchService } from '../branch/branch.service';
                             <a (click)="export('excel')" class="btn btn-default">Export To Excel</a>
                         </div>
                         <zingchart *ngFor="let chart of charts" [chart]="chart" ></zingchart>
-                    </div>
-                    -->
-                    <!--
-                    <div class="tab-pane" id="3a" *ngIf="clickedTab=='Ratings'">
                         <zingchart *ngFor="let chart of stackedbarcharts" [chart]="chart" ></zingchart>
                     </div>
                     -->
-                    <div class="tab-pane" id="4a" *ngIf="clickedTab=='Branches'">
-                        <zingchart *ngFor="let chart of barcharts" [chart]="chart" ></zingchart>
-                    </div>
 
                 </div>
 
@@ -177,7 +198,9 @@ import { BranchService } from '../branch/branch.service';
         selectionTxtFontSize: '16px'
     };
 
-     filterOption;
+     selectedBranchId;
+
+     selectedSurveyId;
 
      private clickedTab = 'Overview';
 
@@ -206,11 +229,14 @@ import { BranchService } from '../branch/branch.service';
 
      private _branches;
 
+     private _surveys;
+
      constructor (
                     private _reportService: ReportService, 
                     private _notification: NotificationsService,
                     private _fileService: FileService,
-                    private _branchService: BranchService) {
+                    private _branchService: BranchService,
+                    private _surveyService: SurveyService) {
 
         this.charts = [
           {
@@ -284,35 +310,51 @@ import { BranchService } from '../branch/branch.service';
 
       ngOnInit(){
           
-          this._branchService.getBranches().subscribe(
-                result => this._branches = result.branches,
-                error => this._notification.error('Error', error)
-            )
-            //Fetch Overview Report
-            var obj = {};
-            obj['branchId'] = '';
-            obj['from'] = '';
-            obj['tab'] = this.clickedTab;
-            obj['to'] = '';
-            this.dateFilter.push(obj);
-            this.getReport(this.dateFilter);
-            this.dateFilter=[];
+        this._branchService.getBranches().subscribe(
+            result => this._branches = result.branches,
+            error => this._notification.error('Error', error)
+        );
+        
+        this._surveyService.getSurveys().subscribe(
+                result => this._surveys = result.surveys,
+                error => console.log(error)
+        );
+
+        //Fetch Overview Report
+        var obj = {};
+        obj['branchId'] = '';
+        obj['surveyId'] = '';
+        obj['from'] = '';
+        obj['tab'] = this.clickedTab;
+        obj['to'] = '';
+        this.dateFilter.push(obj);
+        this.getReport(this.dateFilter);
+        this.dateFilter=[];
       }
 
       ngOnDestroy(){}
 
       filter(option){
           if(option=='branch'){
-                console.log('Made it here');
                 var obj = {};
-                obj['branchId'] = this.filterOption;
+                obj['branchId'] = this.selectedBranchId;
+                obj['surveyId'] = '';
                 obj['tab'] = this.clickedTab;
                 obj['to'] = '';
                 obj['from'] = '';
                 this.dateFilter.push(obj);
                 this.getReport(this.dateFilter);
                 this.dateFilter = [];
-                console.log(this.filterOption);
+          }else if(option=='survey'){
+                var obj = {};
+                obj['surveyId'] = this.selectedSurveyId;
+                obj['branchId'] = '';
+                obj['tab'] = this.clickedTab;
+                obj['to'] = '';
+                obj['from'] = '';
+                this.dateFilter.push(obj);
+                this.getReport(this.dateFilter);
+                this.dateFilter = [];
           }
       }
 
@@ -351,6 +393,7 @@ import { BranchService } from '../branch/branch.service';
         }else if(option=='to') { 
             var obj = {};
             obj['branchId'] = '';
+            obj['surveyId'] = '';
             obj['from'] = this.fromDatePickerSet;
             obj['tab'] = this.clickedTab;
             obj['to'] = new Date(event.jsdate).toLocaleDateString();
@@ -376,9 +419,10 @@ import { BranchService } from '../branch/branch.service';
     updateReport(){
         var obj = {};
         obj['branchId'] = '';
-        obj['from'] = new Date().toLocaleDateString();
+        obj['surveyId'] = '';
+        obj['from'] = '';//new Date().toLocaleDateString();
         obj['tab'] = this.clickedTab;
-        obj['to'] = new Date().toLocaleDateString();
+        obj['to'] = '';//new Date().toLocaleDateString();
         this.dateFilter.push(obj);
         this.getReport(this.dateFilter);
         this.fromDatePickerSet='';

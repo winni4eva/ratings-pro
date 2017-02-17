@@ -15,7 +15,7 @@ export class ReportService {
 
   
   getReport(filter): Observable<any>{
-      return this.http.get( this._apiReportUrl + `?from=${filter[0].from}&to=${filter[0].to}&tab=${filter[0].tab}&branchId=${filter[0].branchId}` )
+      return this.http.get( this._apiReportUrl + `?from=${filter[0].from}&to=${filter[0].to}&tab=${filter[0].tab}&branchId=${filter[0].branchId}&surveyId=${filter[0].surveyId}` )
                       .map(this.extractData)
                       .catch(this.handleError);
       

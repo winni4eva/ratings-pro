@@ -59,7 +59,7 @@ System.register(['@angular/core', '@angular/forms', '../../shared/validator/cust
                         return;
                     this._loginService.postLogin(model)
                         .subscribe(function (response) {
-                        console.log(response);
+                        //console.log(response);
                         _this._loginService.setAuthDetails(response);
                         _this.router.navigate(['admin']);
                     }, function (error) {

@@ -26,6 +26,25 @@ class RatingRepo implements RatingRepoInterface
     }
 
     public function getRatingsReport($request){
+
+        $ratings = $this->model->with(
+                    [
+                        'survey',
+                        //'previousResponse',
+                        //'responsesCount',
+                        'previousResponseName'
+                        //'question',
+                        //'branch',
+                        //'response',
+                        //'response.rater' => function($q){
+                            //$q->('')
+                        //},
+                        //'response.rater.image'
+                    ]
+        );//->count('previous_response_id as votes')
+        //->groupBy('previousResponse.name');
+
+        logger($ratings->take(2)->get());
         //$result = $this->model->with([
                                         //'response' => function($q){
                                             //$q->select('id','name');
@@ -64,18 +83,20 @@ class RatingRepo implements RatingRepoInterface
     }
 
     public function getRatingrawDataReport(array $request){
-           
-            $ratings = $this->model->with(
-                        [
-                            'survey',
-                            'previousResponse',
-                            'question',
-                            'branch',
-                            'response.rater.image'
-                        ]);
+          
+        $ratings = $this->model->with(
+                    [
+                        'survey',
+                        'previousResponse',
+                        'question',
+                        'branch',
+                        'response.rater.image'
+                    ]);
         
         if(collect($request)->get('branchId')){
             $ratings = $ratings->where('branch_id', collect($request)->get('branchId'));
+        }elseif(collect($request)->get('surveyId')){
+            $ratings = $ratings->where('survey_id', collect($request)->get('surveyId'));
         }
 
         if(collect($request)->get('from') && collect($request)->get('to')){
