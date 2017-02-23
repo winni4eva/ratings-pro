@@ -11,7 +11,8 @@
         "tymon/jwt-auth": "dev-develop",
         "Intervention/image":"2.*.*",
         "barryvdh/laravel-dompdf": "^0.7.0",
-        "maatwebsite/excel": "~2.1.0"
+        "maatwebsite/excel": "~2.1.0",
+        "cosenary/simple-php-cache": "dev-master"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

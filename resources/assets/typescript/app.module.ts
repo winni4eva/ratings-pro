@@ -70,11 +70,12 @@ import { ModalService } from './shared/modal/modal.service';
 //import { DataTableModule } from "angular2-datatable";
 //import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 //import { DataFilterPipe } from './shared/pipes/data-filter.pipe';
+import {Ng2PaginationModule} from 'ng2-pagination'; //importing ng2-pagination
 
 @NgModule({
     imports:      [ 
                     HttpModule, BrowserModule, routing, FormsModule, ReactiveFormsModule, 
-                    SimpleNotificationsModule, MyDatePickerModule
+                    SimpleNotificationsModule, MyDatePickerModule, Ng2PaginationModule
                 ],
     declarations: [ 
                     AppComponent, HomeComponent, LoginComponent, Admin2Component, SideBarComponent,

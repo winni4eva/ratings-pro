@@ -10,41 +10,49 @@ import { Router } from '@angular/router';
    `
         <my-content title="Branches">
             <div class="content table-responsive table-full-width">
+                <pagination-controls (pageChange)="page = $event" id="1"
+                      maxSize="5"
+                      directionLinks="true"
+                      autoHide="true"
+                      class="pull-right"
+                      style="pointer:cursor">
+                </pagination-controls>
                 <table class="table table-hover table-striped">
                     <thead>
-                        <!--<th>Company</th>-->
                         <th>Name</th>
                         <th>Number Of Surveys</th>
+                        <th>Add/Remove Survey</th>
                         <th>Action</th>
-                        <!--<th>Admin First Name</th>-->
-                        <!--<th>Admin Last Name</th>-->
-                        <!--<th>Admin Email</th>-->
                     </thead>
                     <tbody>
                         
-                        <tr *ngFor="let branch of _branches;let i = index">
-                            <!--<td>{{_company}}</td>-->
+                        <tr *ngFor="let branch of _branches | paginate: {itemsPerPage: 5, currentPage:page, id: '1'};let i = index">
+                            
                             <td>{{branch?.name}}</td>
-                            <th>{{branch?.surveys.length}}</th>
+                            <td>{{branch?.surveys.length}}</td>
+                            <td><a class="btn btn-default" style="pointer:cursor" (click)="addSurveys(branch?.id)">surveys</a></td>
                             <td>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <select class="form-control" [(ngModel)]="_action[i]" (click)="action($event,i,branch?.id)">
                                             <option [value]="">Select Action</option>
-                                            <option [value]="'surveys'">Surveys</option>
                                             <option [value]="'edit'">Edit</option>
                                             <option [value]="'delete'">Delete</option>
                                         </select>
                                     </div>
                                 </div>
                             </td>
-                            <!--<td>{{branch.first_name}}</td>-->
-                            <!--<td>{{branch.last_name}}</td>-->
-                            <!--<td>{{branch.email}}</td>-->
                         </tr>
                         
                     </tbody>
                 </table>
+                <pagination-controls (pageChange)="page = $event" id="1"
+                      maxSize="5"
+                      directionLinks="true"
+                      autoHide="true"
+                      class="pull-right"
+                      style="pointer:cursor">
+                </pagination-controls>
             </div>
         </my-content>
 
@@ -105,7 +113,11 @@ export class ViewBranchComponent implements OnInit, OnDestroy {
         //this.selectedBookId = bookId;
         //if(this._action[index]=='delete') this.modal1.open('lg');
         //if(this._action[index]=='edit') this.modal2.open('lg');
-        if(this._action[index]=='surveys') this.router.navigate([ `/admin/branch-surveys/${branchId}` ]);
+        //if(this._action[index]=='surveys') this.router.navigate([ `/admin/branch-surveys/${branchId}` ]);
+    }
+
+    addSurveys(branchId){
+        this.router.navigate([ `/admin/branch-surveys/${branchId}` ]);
     }
 
     ngOnDestroy(){

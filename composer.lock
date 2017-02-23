@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "dcb53fb9bb8f34577b5c923ad28c85d8",
-    "content-hash": "2b95963277b4162d9c5cee1fed764001",
+    "hash": "fbd8b6c8a645f40ac2a43ebaccef74d3",
+    "content-hash": "df179342f274bfe6551a9c3b673cd6b3",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -108,6 +108,51 @@
                 "preload"
             ],
             "time": "2016-09-16 12:50:15"
+        },
+        {
+            "name": "cosenary/simple-php-cache",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cosenary/Simple-PHP-Cache.git",
+                "reference": "39607c9307b32248bae2fd6a945183c7249156da"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cosenary/Simple-PHP-Cache/zipball/39607c9307b32248bae2fd6a945183c7249156da",
+                "reference": "39607c9307b32248bae2fd6a945183c7249156da",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "."
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Metz",
+                    "email": "christian-metz1@gmx.net",
+                    "homepage": "http://metzweb.net"
+                }
+            ],
+            "description": "A light, simple but powerful PHP5 Cache Class which uses the filesystem for caching.",
+            "homepage": "https://github.com/cosenary/Simple-PHP-Cache",
+            "keywords": [
+                "Simple",
+                "cache",
+                "filesystem",
+                "json"
+            ],
+            "time": "2015-01-03 18:28:23"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -4185,7 +4230,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "tymon/jwt-auth": 20
+        "tymon/jwt-auth": 20,
+        "cosenary/simple-php-cache": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
