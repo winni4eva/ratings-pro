@@ -35,7 +35,8 @@ class ReportController extends Controller
                 $report = $this->reportService->getSurveys( $request->all() );
                 break;
             case 'Ratings':
-                $report = [];//$this->reportService->getRatings( $request->all() );
+                $report = []; //$this->reportService->getRatings( $request->all() );
+                $raw = $this->reportService->getRatingsRawDataReport( $request->all() );
                 break;
             case 'Branches':
                 $report = $this->reportService->getOverview( $request->all() );

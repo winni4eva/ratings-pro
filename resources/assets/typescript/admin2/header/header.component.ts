@@ -10,6 +10,7 @@ import {NotificationsService} from 'angular2-notifications';
    `
    <nav class="navbar navbar-default navbar-fixed">
             <div class="container-fluid">
+                <!--
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">
                         <span class="sr-only">Toggle navigation</span>
@@ -19,14 +20,16 @@ import {NotificationsService} from 'angular2-notifications';
                     </button>
                     <a class="navbar-brand" href="#">Dashboard</a>
                 </div>
+                -->
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-left">
+                        <!--
                         <li>
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <i class="fa fa-dashboard"></i>
                             </a>
                         </li>
-                        <!--
+                        
                         <li class="dropdown">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-globe"></i>
@@ -96,6 +99,17 @@ import {NotificationsService} from 'angular2-notifications';
                                 <li><a [routerLink]="['/admin/add_user']">New</a></li>
                               </ul>
                         </li>
+                        <li class="dropdown">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    SideBar Color
+                                    <b class="caret"></b>
+                              </a>
+                              <ul class="dropdown-menu">
+                                <li *ngFor="let color of _sideBarColors">
+                                    <a (click)="sendSideBarColor(color)" style="cursor:pointer">{{color | uppercase}}</a>
+                                </li>
+                              </ul>
+                        </li>
                         <li>
                             <a (click)="logout()" style="cursor:pointer">
                                 Log out [ {{_info[0]?.first_name}} ]
@@ -112,13 +126,20 @@ export class HeaderComponent {
 
     private _info;
 
+    private _sideBarColors: Array<any> = ['blue', 'azure', 'green', 'orange', 'red', 'purple'];
+
+    @Output("sideBarColor") selectedSideBarColor: EventEmitter<any> = new EventEmitter();
+
     constructor(
               private _loginService: LoginService, 
               private _storageService: StorageService,
               private _router: Router,
-              private _notification: NotificationsService){}
+              private _notification: NotificationsService,
+              private activatedRoute: ActivatedRoute){}
 
     ngOnInit(){
+        //this.activatedRoute.params.subscribe(params => console.log(params) );
+
         this._info = (this._storageService.get('rUser'))?
                         JSON.parse(this._storageService.get('rUser')) : {};
     }
@@ -133,5 +154,9 @@ export class HeaderComponent {
                 },
                 error => this._notification.error('Error', error)
             );
+    }
+
+    private sendSideBarColor(selectedColor){
+        this.selectedSideBarColor.emit( selectedColor );
     }
  }

@@ -24,7 +24,7 @@ System.register(['@angular/core'], function(exports_1, context_1) {
                 Admin2Component = __decorate([
                     core_1.Component({
                         selector: 'my-admin',
-                        template: "\n    <div class=\"wrapper\">\n        <!-- SideBar -->\n        <my-sidebar></my-sidebar>\n        <!-- SideBar -->\n\n        <div class=\"main-panel\">\n            <!-- Header-->\n            <my-header></my-header>\n            <!-- Header -->\n\n\n            <!-- Content -->\n            <router-outlet></router-outlet>\n            <!-- Content -->\n\n\n            <!-- Footer -->\n            <!--<my-footer></my-footer>-->\n            <!-- Footer -->\n        </div>\n    </div>\n    "
+                        template: "\n    <div class=\"wrapper\">\n        <!-- SideBar -->\n        <my-sidebar [color]=\"_sidBarColor\"></my-sidebar>\n        <!-- SideBar -->\n\n        <div class=\"main-panel\">\n            <!-- Header-->\n            <my-header (sideBarColor)=\"_sidBarColor=$event\"></my-header>\n            <!-- Header -->\n\n            <!-- Content -->\n            <router-outlet></router-outlet>\n            <!-- Content -->\n\n\n            <!-- Footer -->\n            <!--<my-footer></my-footer>-->\n            <!-- Footer -->\n        </div>\n    </div>\n    "
                     }), 
                     __metadata('design:paramtypes', [])
                 ], Admin2Component);

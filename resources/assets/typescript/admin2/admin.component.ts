@@ -5,14 +5,13 @@ import { Component } from '@angular/core';
     template: `
     <div class="wrapper">
         <!-- SideBar -->
-        <my-sidebar></my-sidebar>
+        <my-sidebar [color]="_sidBarColor"></my-sidebar>
         <!-- SideBar -->
 
         <div class="main-panel">
             <!-- Header-->
-            <my-header></my-header>
+            <my-header (sideBarColor)="_sidBarColor=$event"></my-header>
             <!-- Header -->
-
 
             <!-- Content -->
             <router-outlet></router-outlet>
@@ -28,6 +27,8 @@ import { Component } from '@angular/core';
 })
 
 export class Admin2Component {
+
+    private _sidBarColor: string;
 
     constructor(){}
 

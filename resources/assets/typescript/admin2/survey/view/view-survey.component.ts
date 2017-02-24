@@ -11,15 +11,6 @@ import { NotificationsService } from 'angular2-notifications';
 
         <my-content title="Surveys">
 
-            <div class="pull-right">
-                <span (click)="export('pdf')">
-                    p<i style="font-size:30px;cursor:pointer !important" class="pe-7s-note2"></i>
-                </span>
-                <span (click)="export('excel')">
-                    e<i style="font-size:30px;cursor:pointer !important" class="pe-7s-note2"></i>
-                </span>
-            </div>
-
             <div class="content table-responsive table-full-width">
                 <table class="table table-hover table-striped">
                     <thead>

@@ -2,6 +2,7 @@
 namespace App\Domain\Repositories\Rating;
 
 use App\Rating;
+use DB;
 
 class RatingRepo implements RatingRepoInterface
 {
@@ -25,57 +26,18 @@ class RatingRepo implements RatingRepoInterface
         }
     }
 
-    public function getRatingsReport($request){
+    public function ratingsRawDataReport($request){
 
-        $ratings = $this->model->with(
-                    [
-                        'survey',
-                        //'previousResponse',
-                        //'responsesCount',
-                        'previousResponseName'
-                        //'question',
-                        //'branch',
-                        //'response',
-                        //'response.rater' => function($q){
-                            //$q->('')
-                        //},
-                        //'response.rater.image'
-                    ]
-        );//->count('previous_response_id as votes')
-        //->groupBy('previousResponse.name');
+        return $this->model->select('surveys.title', 'responses.name', DB::raw('avg(raters.score) as average'), DB::raw('count(ratings.response_id) as count'))
+                        ->leftjoin('surveys', 'ratings.survey_id', '=', 'surveys.id')
+                        ->leftjoin('responses', 'ratings.response_id', '=', 'responses.id')
+                        //->leftjoin('responses as previousResponse', 'ratings.previous_response_id', '=', 'responses.id')
+                        ->leftjoin('raters', 'ratings.response_id', '=', 'raters.response_id')
+                        ->groupBy('surveys.title','responses.name')
+                        ->get();
 
-        logger($ratings->take(2)->get());
-        //$result = $this->model->with([
-                                        //'response' => function($q){
-                                            //$q->select('id','name');
-                                                //->groupBy('name');
-                                        //},
-                                        //'previousResponse' => function($q){
-                                            //$q->select('id','name');
-                                              //->groupBy('name');
-                                        //}
-                                    //])
-                    //->groupBy('name')
-                    //->get(['response.name']);
+        //logger( $ratings->get() );
 
-        //$result = $this->model->leftjoin('branches', 'ratings.branch_id', '=', 'branches.id')
-                    //->leftjoin('questions', 'ratings.question_id', '=', 'questions.id')
-                    //->leftjoin('responses', 'ratings.response_id', '=', 'responses.id')
-                    // ->leftjoin('responses', 'ratings.previous_response_id', '=', 'responses.id')
-                    // ->select(
-                    //             [ 
-                    //                 '*'
-                    //                 //'questions.question', 
-                    //                 //'responses.name', 
-                    //                 //\DB::raw('COUNT( responses.name ) as numberOfResponses')
-                    //             ]
-                    //         )
-                    //->groupBy('responses.name')
-                    //->select(array('issues.*', DB::raw('COUNT( DISTINCT(responses.name) ) as numberOfResponses')))
-                    //->get();
-
-        //logger($result);
-        return [];
     }
 
     protected function getDateTimeDate($period, $format = 'Y-m-d H:i:s'){

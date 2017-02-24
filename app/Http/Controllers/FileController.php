@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Domain\Services\User\UserService;
+use App\Domain\Services\Report\ReportService;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use PDF;
 use Excel;
@@ -14,18 +15,38 @@ class FileController extends Controller
 
     protected $userService;
 
-    public function __construct(UserService $userService){
+    protected $reportService;
+
+    public function __construct(UserService $userService, ReportService $reportService){
         $this->userService = $userService;
+        $this->reportService = $reportService;
     }
 
     public function store(Request $request)
     {
         $data = [];
 
-        if($request->get('resource')=='surveys'){
+        if($request->get('resource')=='Overview'){
             //$data = $this->userService->getUserSurveys($this->guard()->user()->id);
             $data = $this->userService->getUserSurveyReport($this->guard()->user()->id);
 
+            //if($request->get('fileType')=='pdf'){
+                if($path = $this->generateReport($request->get('resource'), $data, $request->get('fileType')))
+                    return response()->json(
+                        [
+                            'success'=>'File generated successfully.',
+                            'file' => $this->download($path)
+                        ],200);
+
+                return response()->json(['error'=>'Error generating report'], 403);
+            //}
+        }
+
+        if($request->get('resource')=='Ratings'){
+            //$data = $this->userService->getUserSurveys($this->guard()->user()->id);
+    
+            $data = $this->reportService->getRatingsRawDataReport( $request->all() );
+            
             //if($request->get('fileType')=='pdf'){
                 if($path = $this->generateReport($request->get('resource'), $data, $request->get('fileType')))
                     return response()->json(
@@ -60,37 +81,70 @@ class FileController extends Controller
                         tr.odd {background:#e1ffe1;}
                     </style>' : '';
                     $template .= ($fileType == 'pdf')? '</head><body><div id=""><div id="logo">':'';
-                                $template .= ($fileType == 'pdf')? "<h3>{$resource}</h3>":'';
+                                //$template .= ($fileType == 'pdf')? "<h3>".($resource=='Overview'? 'Surveys': $resource"</h3>";
                                 $template .= ($fileType == 'pdf')? '<hr><!-- Content Here -->':'';
                     //$template .= $this->surveyReporter($data);
                     $template .= "<table>
                         <tbody>
                             <tr>";
                    $template .= ($fileType == 'pdf')? '<td><strong>No.</strong></td>':'';
-                   $template .= "
-                                <td><strong>Questionaire</strong></td>
-                                <td><strong>Branch</strong></td>
-                                <td><strong>Question</strong></td>
-                                <td><strong>Answer</strong></td>
-                                <td><strong>Score</strong></td>
-                                <td><strong>Date</strong></td>
-                            </tr>";
+                   switch ($resource) {
+                       case 'Overview':
+                           $template .= "<td><strong>Questionaire</strong></td>
+                                            <td><strong>Branch</strong></td>
+                                            <td><strong>Question</strong></td>
+                                            <td><strong>Answer</strong></td>
+                                            <td><strong>Score</strong></td>
+                                            <td><strong>Date</strong></td>
+                                        </tr>";
+                           break;
+                       case 'Ratings':
+                           $template .= "<td><strong>Survey</strong></td>
+                                            <td><strong>Rater</strong></td>
+                                            <td><strong>Average</strong></td>
+                                            <td><strong>Count</strong></td>
+                                        </tr>";
+                           break;
+                       default:
+                           break;
+                   }
                             $num = 0; $myClass = 'odd';
-                            foreach ($surveys as $survey) {
-                                $num += 1;
-                                $myClass = ($num%2 == 0)? 'even' : 'odd';
-                                $template .= "<tr class='{$myClass}'>";
-                                $template .= ($fileType == 'pdf')? "<td>{$num}</td>":'';
-                                $template .= "
-                                                <td>{$survey->title}</td>
-                                                <td>{$survey->branch_name}</td>
-                                                <td>{$survey->question}</td>
-                                                <td>{$survey->response_name}</td>
-                                                <td>{$survey->score}</td>
-                                                <td>{$survey->rating_date}</td>
-                                            </tr>";
-                                //logger(collect($survey)->get(0));
-                            }      
+
+                            switch ($resource) {
+                                case 'Overview':
+                                    foreach ($surveys as $survey) {
+                                        $num += 1;
+                                        $myClass = ($num%2 == 0)? 'even' : 'odd';
+                                        $template .= "<tr class='{$myClass}'>";
+                                        $template .= ($fileType == 'pdf')? "<td>{$num}</td>":'';
+                                        $template .= "
+                                                        <td>{$survey->title}</td>
+                                                        <td>{$survey->branch_name}</td>
+                                                        <td>{$survey->question}</td>
+                                                        <td>{$survey->response_name}</td>
+                                                        <td>{$survey->score}</td>
+                                                        <td>{$survey->rating_date}</td>
+                                                    </tr>";
+                                    } 
+                                    break;
+                                case 'Ratings':
+                                    foreach ($surveys as $survey) {
+                                        $num += 1;
+                                        $myClass = ($num%2 == 0)? 'even' : 'odd';
+                                        $template .= "<tr class='{$myClass}'>";
+                                        $template .= ($fileType == 'pdf')? "<td>{$num}</td>":'';
+                                        $template .= "
+                                                        <td>{$survey->title}</td>
+                                                        <td>{$survey->name}</td>
+                                                        <td>{$survey->average}</td>
+                                                        <td>{$survey->count}</td>
+                                                    </tr>";
+                                    } 
+                                    break;
+                                default:
+                                    # code...
+                                    break;
+                            }     
                     
                        $template .= "</tbody></table>";
                     $template .= ($fileType == 'pdf')? '<!-- Content Here -->
@@ -127,6 +181,7 @@ class FileController extends Controller
                 //$reportPath = $viewPath;
 
                 if( $handle = @fopen($viewPath,'w') ){
+                    
                     @fwrite($handle, $template);
                     @fclose($handle);
 
@@ -145,7 +200,7 @@ class FileController extends Controller
                 # code...
                 break;
         }
-        
+    
         return $reportPath;
     }
 

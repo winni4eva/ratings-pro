@@ -31,9 +31,9 @@ class ReportService
      * @param array $paginate
      * @return mixed
      */
-    public function getRatings(array $request)
+    public function getRatingsRawDataReport(array $request)
     {
-        return $this->ratingRepo->getRatingsReport( $request );
+        return $this->ratingRepo->ratingsRawDataReport( $request );
     }
 
     public function getOverview(array $request){
