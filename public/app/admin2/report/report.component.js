@@ -141,24 +141,20 @@ System.register(['@angular/core', './report.service', 'angular2-notifications', 
                             data: {
                                 "type": "bar3d",
                                 "plot": {
-                                    "stacked": true,
-                                    "stack-type": "normal" /* Optional specification */
+                                    "aspect": "bar"
                                 },
                                 "series": [
                                     {
-                                        "text": "Adam",
-                                        "values": [20, 40, 25, 50, 15, 45, 33, 34],
-                                        "stack": 1
+                                        "text": "Qaulity Service Survey",
+                                        "values": [20, 40, 25, 50, 15, 45, 33, 34, 32]
                                     },
                                     {
-                                        "text": "Winni",
-                                        "values": [5, 30, 21, 18, 59, 50, 28, 33],
-                                        "stack": 1
+                                        "text": "Money Transfer Survey",
+                                        "values": [5, 30, 21, 18, 59, 50, 28, 33, 12]
                                     },
                                     {
-                                        "text": "Wahab",
-                                        "values": [30, 5, 18, 21, 33, 41, 29, 15],
-                                        "stack": 2
+                                        "text": "Saturday Banking Survey",
+                                        "values": [30, 5, 18, 21, 33, 41, 29, 15, 32]
                                     }
                                 ]
                             },

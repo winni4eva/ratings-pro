@@ -14,13 +14,7 @@ class AddNullableToRatingsPreviousResponse extends Migration
     public function up()
     {
         Schema::table('ratings', function (Blueprint $table) {
-            //$table->('previous_response_id', 50)->nullable()->change();
-            //$table->integer('previous_response_id')->unsigned()->nullable()->change();
-            // $table->foreign('previous_response_id','rating_previousResponseId_fk')
-            //     ->references('id')
-            //     ->on('responses')
-            //     ->onDelete('cascade')
-            //     ->onUpdate('cascade');
+            $table->integer('previous_response_id')->unsigned()->nullable()->change();
         });
     }
 

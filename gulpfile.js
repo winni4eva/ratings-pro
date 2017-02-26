@@ -33,7 +33,6 @@ elixir(mix => {
     .copy('node_modules/rxjs', 'public/rxjs')
     .copy('node_modules/zone.js', 'public/zone.js')
     .copy('node_modules/mydatepicker', 'public/mydatepicker')
-    .copy('node_modules/angular2-datatable', 'public/angular2-datatable')
     .copy('node_modules/lodash', 'public/lodash')
     .copy('node_modules/@types/lodash', 'public/@types/lodash')
     .copy('node_modules/ng2-pagination', 'public/ng2-pagination')
