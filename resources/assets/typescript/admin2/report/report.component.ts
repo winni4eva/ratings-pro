@@ -53,13 +53,15 @@ import { SurveyService } from '../survey/survey.service';
                     <li class="active">
                         <a  href="#1a" data-toggle="tab" (click)="clickedTab='Overview';updateReport()">Overview</a>
                     </li>
+
+                    <li>
+                        <a href="#3a" data-toggle="tab" (click)="clickedTab='Ratings';updateReport()">Ratings</a>
+                    </li>
+
                     <li>
                         <a href="#4a" data-toggle="tab" (click)="clickedTab='Branches';updateReport()">Branches</a>
                     </li>
                     
-                    <li>
-                        <a href="#3a" data-toggle="tab" (click)="clickedTab='Ratings';updateReport()">Ratings</a>
-                    </li>
                     <!--
                     <li>
                         <a href="#2a" data-toggle="tab" (click)="clickedTab='Surveys';updateReport()">Surveys</a>
@@ -73,14 +75,14 @@ import { SurveyService } from '../survey/survey.service';
 
                     <div class="form-group pull-left" *ngIf="this._tabOptions[clickedTab]=='raw'">
                         <select class="form-control" [(ngModel)]="selectedBranchId" (change)="filter('branch')">
-                            <option [value]="''" [selected]="!selectedBranchId">--Filter Branch--</option>
+                            <option [value]="''">--Filter Branch--</option>
                             <option [value]="branch.id" *ngFor="let branch of _branches">{{branch.name}}</option>
                         </select>
                     </div>
 
                     <div class="form-group pull-left" *ngIf="this._tabOptions[clickedTab]=='raw'">
                         <select class="form-control" [(ngModel)]="selectedSurveyId" (change)="filter('survey')">
-                            <option [value]="''" [selected]="!selectedSurveyId">--Filter Survey--</option>
+                            <option [value]="''">--Filter Survey--</option>
                             <option [value]="survey.id" *ngFor="let survey of _surveys">{{survey.title}}</option>
                         </select>
                     </div>
@@ -90,19 +92,20 @@ import { SurveyService } from '../survey/survey.service';
                 </div>
 
                 <div class="img-thumbnail" style="width:200%" *ngIf="clickedTab=='Ratings'">
+
                     <a class="btn btn-primary pull-left" (click)="changeReportType('raw')">Raw Data</a>
                     <a class="btn btn-primary pull-left" (click)="changeReportType('chart')">Chart</a>
 
                     <div class="form-group pull-left" *ngIf="this._tabOptions[clickedTab]=='raw'">
-                        <select class="form-control" (change)="filter('branch')">
-                            <option [value]="''" [selected]="">--Filter Branch--</option>
+                        <select class="form-control" [(ngModel)]="selectedBranchId" (change)="filter('branch')">
+                            <option [value]="''">--Filter Branch--</option>
                             <option [value]="branch.id" *ngFor="let branch of _branches">{{branch.name}}</option>
                         </select>
                     </div>
 
                     <div class="form-group pull-left" *ngIf="this._tabOptions[clickedTab]=='raw'">
-                        <select class="form-control" (change)="filter('survey')">
-                            <option [value]="''" [selected]="">--Filter Survey--</option>
+                        <select class="form-control" [(ngModel)]="selectedSurveyId" (change)="filter('survey')">
+                            <option [value]="''">--Filter Survey--</option>
                             <option [value]="survey.id" *ngFor="let survey of _surveys">{{survey.title}}</option>
                         </select>
                     </div>
@@ -133,6 +136,16 @@ import { SurveyService } from '../survey/survey.service';
                                 <a (click)="export('excel')" class="btn btn-default">Export To Excel</a>
                             </div>
 
+                            <div class="form-group pull-right">
+                                <select class="form-control" [(ngModel)]="_overviewItemsPerpage" (change)="setItemsPerPage()">
+                                    <option [value]="10" [selected]="">--Items Per Page--</option>
+                                    <option [value]="10">10</option>
+                                    <option [value]="10">20</option>
+                                    <option [value]="10">50</option>
+                                    <option [value]="10">100</option>
+                                </select>
+                            </div>
+
                             <table class="table table-hover table-striped">
                                 <thead>
                                     <th style="color:black">#</th>
@@ -145,7 +158,7 @@ import { SurveyService } from '../survey/survey.service';
                                     <th style="color:black">Date Created</th>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let data of overViewtable | paginate: {itemsPerPage: 5, currentPage:page, id: '1'};let i=index">
+                                    <tr *ngFor="let data of overViewtable | paginate: {itemsPerPage: _overviewItemsPerpage, currentPage:page, id: '1'};let i=index">
                                         <td style="color:black">{{i+1}}</td>
                                         <td style="color:black">{{data?.survey?.title}}</td>
                                         <td style="color:black">{{data?.branch?.name}}</td>
@@ -174,7 +187,7 @@ import { SurveyService } from '../survey/survey.service';
                     </div>
 
                     <div class="tab-pane active" id="3a" *ngIf="clickedTab=='Ratings' && _tabOptions[clickedTab]=='chart'">
-                        <zingchart *ngFor="let chart of piecharts" [chart]="chart" ></zingchart>
+                        <zingchart *ngFor="let chart of multistackedbarchart" [chart]="chart" ></zingchart>
                     </div>
 
                     <div class="tab-pane active" id="3a"  *ngIf="clickedTab=='Ratings' && _tabOptions[clickedTab]=='raw'">
@@ -194,21 +207,33 @@ import { SurveyService } from '../survey/survey.service';
                                 <a (click)="export('excel')" class="btn btn-default">Export To Excel</a>
                             </div>
 
+                            <div class="form-group pull-right">
+                                <select class="form-control" [(ngModel)]="_ratingsItemsPerPage" (change)="setItemsPerPage()">
+                                    <option [value]="10" [selected]="">--Items Per Page--</option>
+                                    <option [value]="10">10</option>
+                                    <option [value]="10">20</option>
+                                    <option [value]="10">50</option>
+                                    <option [value]="10">100</option>
+                                </select>
+                            </div>
+
                             <table class="table table-hover table-striped">
                                 <thead>
                                     <th style="color:black">#</th>
                                     <th style="color:black">Survey</th>
                                     <th style="color:black">Rater</th>
-                                    <th style="color:black">Average</th>
+                                    <th style="color:black">Score</th>
                                     <th style="color:black">Count</th>
+                                    <th style="color:black">Average</th>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let rating of _ratingsTable | paginate: {itemsPerPage: 5, currentPage:page, id: '1'};let i=index">
+                                    <tr *ngFor="let rating of _ratingsTable | paginate: {itemsPerPage: _ratingsItemsPerPage, currentPage:page, id: '2'};let i=index">
                                         <td style="color:black">{{i+1}}</td>
                                         <td style="color:black">{{rating?.title}}</td>
                                         <td style="color:black">{{rating?.name}}</td>
-                                        <td style="color:black">{{rating?.average}}</td>
+                                        <td style="color:black">{{rating?.score}}</td>
                                         <td style="color:black">{{rating?.count}}</td>
+                                        <td style="color:black">{{rating?.average}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -251,6 +276,8 @@ import { SurveyService } from '../survey/survey.service';
      piecharts: any;
 
      stackedbarcharts: any;
+
+     multistackedbarchart;
 
      private _options = {
         position: ["top", "right"],
@@ -304,6 +331,12 @@ import { SurveyService } from '../survey/survey.service';
      private _branches;
 
      private _surveys;
+
+     _overviewItemsPerpage: number = 10;
+
+     _ratingsItemsPerPage: number = 10;
+
+     //@Input('taxonomySeparator') taxonomy_seperator: string;
 
      constructor (
                     private _reportService: ReportService, 
@@ -380,6 +413,38 @@ import { SurveyService } from '../survey/survey.service';
         //     }
         // ];
 
+        this.multistackedbarchart = [
+          {
+            id: 'chart-6',
+            data: {
+              "type": "bar3d",
+              "plot":{
+                "stacked":true,
+                "stack-type":"normal" /* Optional specification */
+              }, 
+              "series": [
+                    {
+                    "text": "Adam", 
+                    "values":[20,40,25,50,15,45,33,34],
+                    "stack":1
+                    },
+                    {
+                    "text": "Winni", 
+                    "values":[5,30,21,18,59,50,28,33],
+                    "stack":1
+                    },
+                    {
+                    "text": "Wahab", 
+                    "values":[30,5,18,21,33,41,29,15],
+                    "stack":2
+                    }
+                ]
+            },
+            height: 600,
+            width: '100%'
+            }
+        ];
+
       }
 
       ngOnInit(){
@@ -407,6 +472,10 @@ import { SurveyService } from '../survey/survey.service';
       }
 
       ngOnDestroy(){}
+
+      setItemsPerPage() {
+        this.updateReport();
+     }
 
       filter(option){
           if(option=='branch'){

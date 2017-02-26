@@ -27,16 +27,32 @@ class RatingRepo implements RatingRepoInterface
     }
 
     public function ratingsRawDataReport($request){
-
-        return $this->model->select('surveys.title', 'responses.name', DB::raw('avg(raters.score) as average'), DB::raw('count(ratings.response_id) as count'))
+        
+        $ratings = $this->model->select('surveys.title', 'responses.name', 'raters.score','r.sum', 'r.total', DB::raw('(raters.score*count(ratings.response_id))/r.total as average'), DB::raw('count(ratings.response_id) as count') )
                         ->leftjoin('surveys', 'ratings.survey_id', '=', 'surveys.id')
                         ->leftjoin('responses', 'ratings.response_id', '=', 'responses.id')
                         //->leftjoin('responses as previousResponse', 'ratings.previous_response_id', '=', 'responses.id')
                         ->leftjoin('raters', 'ratings.response_id', '=', 'raters.response_id')
-                        ->groupBy('surveys.title','responses.name')
-                        ->get();
+                        ->leftJoin(DB::raw('(SELECT SUM(score) AS sum, COUNT(*) as total FROM raters) as r'),'ratings.response_id', '=', 'raters.response_id')
+                        ->groupBy('surveys.title','responses.name','raters.score','r.sum','r.total');
 
-        //logger( $ratings->get() );
+        if(collect($request)->get('branchId')){
+            $ratings = $ratings->where('ratings.branch_id', collect($request)->get('branchId'));
+        }elseif(collect($request)->get('surveyId')){
+            $ratings = $ratings->where('ratings.survey_id', collect($request)->get('surveyId'));
+        }
+
+        if(collect($request)->get('from') && collect($request)->get('to')){
+            $ratings = $ratings->whereBetween(
+                                'ratings.created_at', 
+                                [
+                                    $this->getDateTimeDate( $request['from'])->format('Y-m-d H:i:s'), 
+                                    $this->getDateTimeDate( $request['to'])->format('Y-m-d H:i:s')
+                                ]
+                            );
+        }
+        //logger($ratings->get());
+        return $ratings->get();
 
     }
 
