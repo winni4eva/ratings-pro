@@ -75,14 +75,14 @@ import { SurveyService } from '../survey/survey.service';
 
                     <div class="form-group pull-left" *ngIf="this._tabOptions[clickedTab]=='raw'">
                         <select class="form-control" [(ngModel)]="selectedBranchId" (change)="filter('branch')">
-                            <option [value]="''">--Filter Branch--</option>
+                            <option [value]="">--Filter Branch--</option>
                             <option [value]="branch.id" *ngFor="let branch of _branches">{{branch.name}}</option>
                         </select>
                     </div>
 
                     <div class="form-group pull-left" *ngIf="this._tabOptions[clickedTab]=='raw'">
                         <select class="form-control" [(ngModel)]="selectedSurveyId" (change)="filter('survey')">
-                            <option [value]="''">--Filter Survey--</option>
+                            <option [value]="">--Filter Survey--</option>
                             <option [value]="survey.id" *ngFor="let survey of _surveys">{{survey.title}}</option>
                         </select>
                     </div>
@@ -98,14 +98,14 @@ import { SurveyService } from '../survey/survey.service';
 
                     <div class="form-group pull-left" *ngIf="this._tabOptions[clickedTab]=='raw'">
                         <select class="form-control" [(ngModel)]="selectedBranchId" (change)="filter('branch')">
-                            <option [value]="''">--Filter Branch--</option>
+                            <option [value]="">--Filter Branch--</option>
                             <option [value]="branch.id" *ngFor="let branch of _branches">{{branch.name}}</option>
                         </select>
                     </div>
 
                     <div class="form-group pull-left" *ngIf="this._tabOptions[clickedTab]=='raw'">
                         <select class="form-control" [(ngModel)]="selectedSurveyId" (change)="filter('survey')">
-                            <option [value]="''">--Filter Survey--</option>
+                            <option [value]="">--Filter Survey--</option>
                             <option [value]="survey.id" *ngFor="let survey of _surveys">{{survey.title}}</option>
                         </select>
                     </div>
@@ -137,12 +137,12 @@ import { SurveyService } from '../survey/survey.service';
                             </div>
 
                             <div class="form-group pull-right">
-                                <select class="form-control" [(ngModel)]="_overviewItemsPerpage" (change)="setItemsPerPage()">
+                                <select class="form-control" [(ngModel)]="_overviewItemsPerpage">
                                     <option [value]="10" [selected]="">--Items Per Page--</option>
                                     <option [value]="10">10</option>
-                                    <option [value]="10">20</option>
-                                    <option [value]="10">50</option>
-                                    <option [value]="10">100</option>
+                                    <option [value]="20">20</option>
+                                    <option [value]="50">50</option>
+                                    <option [value]="100">100</option>
                                 </select>
                             </div>
 
@@ -208,12 +208,12 @@ import { SurveyService } from '../survey/survey.service';
                             </div>
 
                             <div class="form-group pull-right">
-                                <select class="form-control" [(ngModel)]="_ratingsItemsPerPage" (change)="setItemsPerPage()">
+                                <select class="form-control" [(ngModel)]="_ratingsItemsPerPage">
                                     <option [value]="10" [selected]="">--Items Per Page--</option>
                                     <option [value]="10">10</option>
-                                    <option [value]="10">20</option>
-                                    <option [value]="10">50</option>
-                                    <option [value]="10">100</option>
+                                    <option [value]="20">20</option>
+                                    <option [value]="30">50</option>
+                                    <option [value]="40">100</option>
                                 </select>
                             </div>
 
@@ -461,9 +461,6 @@ import { SurveyService } from '../survey/survey.service';
 
       ngOnDestroy(){}
 
-      setItemsPerPage() {
-        this.updateReport();
-     }
 
       filter(option){
           if(option=='branch'){
