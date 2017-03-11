@@ -20,15 +20,27 @@ class ResponseRepo implements ResponseRepoInterface
      */
     public function save($request)
     {
+        logger(collect($request)->get('responseId'));
 
+        $responseId = collect($request)->get('responseId');
         if(collect($request)->get('rater')==0){
-            return $this->model->create( collect($request)->only(['name','rater'])->all() );
+            if($responseId > 0){
+                return $this->model->where('id', $responseId)->update( collect($request)->only(['name','rater'])->all() );
+            }else{
+                return $this->model->create( collect($request)->only(['name','rater'])->all() );
+            }
         }elseif(collect($request)->get('rater')==1){
-            $response = $this->model->create( collect( $request)->only(['name','rater'])->all() );
-            return $response->rater()->create( collect( $request)->only(['image_id','score'])->all() );
+            if($responseId > 0){
+                $this->model->where('id', $responseId)->update( collect( $request)->only(['name','rater'])->all() );
+                $response = $this->model->find($responseId);
+                return $response->rater()->update( collect( $request)->only(['image_id','score'])->all() );
+            }else{
+                $response = $this->model->create( collect( $request)->only(['name','rater'])->all() );
+                return $response->rater()->create( collect( $request)->only(['image_id','score'])->all() );
+            }
         }
         
-        return true;
+        //return true;
     }
 
     /**
@@ -37,14 +49,30 @@ class ResponseRepo implements ResponseRepoInterface
      * @param array $paginate
      * @return mixed
      */
-    public function get($paginate)
+    public function get($request)
     {
+        if(collect($request)->get('responseId')>0){
+            return $this->model->with('rater.image')
+                        ->where('id', collect($request)->get('responseId') )
+                        ->get(); 
+        }
         //$skip = $paginate['currentPage'] * $paginate['itemsPerPage'];
         //$take = $paginate['itemsPerPage'];
 
         //return $this->model->with('images')->skip($skip)->take($take)->paginate();
         //return $this->model->with('images')->paginate($take);
         return $this->model->with('rater.image')->get();
+    }
+
+    /**
+     * remove response
+     *
+     * @param int $id
+     * @return mixed
+     */
+    public function remove($id)
+    {
+        return $this->model->destroy($id);
     }
 
 }

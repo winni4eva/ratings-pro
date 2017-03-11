@@ -25,7 +25,7 @@
             'underscore': 'underscore',
             'mydatepicker': 'mydatepicker',
             'angular2-datatable': 'angular2-datatable',
-            'lodash':'lodash',
+            'lodash':'lodash/lodash.js',
             '@swimlane/ngx-datatable':'@swimlane/ngx-datatable',
             'ng2-pagination': 'ng2-pagination'
         },

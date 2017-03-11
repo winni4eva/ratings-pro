@@ -68,7 +68,7 @@ System.register(['../auth/auth.guard', './admin.component', './branch/view/view-
                         { path: 'view_images', component: view_image_component_1.ViewImageComponent },
                         { path: 'add_image', component: add_image_component_1.AddImageComponent },
                         { path: 'view_responses', component: view_response_component_1.ViewResponseComponent },
-                        { path: 'add_response', component: add_response_component_1.AddResponseComponent },
+                        { path: 'add_response/:responseId', component: add_response_component_1.AddResponseComponent },
                         { path: 'report', component: report_component_1.ReportComponent },
                         { path: 'branch-surveys/:branchId', component: branch_surveys_component_1.BranchSurveyComponent },
                         { path: 'view_users', component: view_user_component_1.ViewUserComponent },

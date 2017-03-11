@@ -30,9 +30,20 @@ class ResponseService
      * @param array $paginate
      * @return mixed
      */
-    public function getResponses(array $paginate)
+    public function getResponses($request)
     {
-        return $this->responseRepo->get($paginate);
+        return $this->responseRepo->get($request);
+    }
+
+    /**
+     * Remove Response
+     *
+     * @param int $id
+     * @return mixed
+     */
+    public function removeResponse($id)
+    {
+        return $this->responseRepo->remove($id);
     }
 
 }

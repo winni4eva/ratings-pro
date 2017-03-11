@@ -50,7 +50,7 @@ System.register(['@angular/core', 'rxjs/Observable', '@angular/http', 'rxjs/Rx']
                     return this.intercept(_super.prototype.put.call(this, url, body, this.getRequestOptionArgs(options)));
                 };
                 CustomHttp.prototype.delete = function (url, options) {
-                    return this.intercept(_super.prototype.delete.call(this, url, options));
+                    return this.intercept(_super.prototype.delete.call(this, url, this.getRequestOptionArgs(options)));
                 };
                 CustomHttp.prototype.getRequestOptionArgs = function (options) {
                     if (options == null) {

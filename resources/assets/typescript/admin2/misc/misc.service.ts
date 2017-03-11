@@ -64,23 +64,24 @@ export class MiscService {
       
   }
 
-  getResponses(currentPage, itemsPerPage): Observable<any>{
-      return this.http.get( this._apiResponseUrl + `?currentPage=${currentPage}&itemsPerPage=${itemsPerPage}` )
+  getResponses(responseId = 0): Observable<any>{
+      return this.http.get( this._apiResponseUrl+`?responseId=${responseId}` )
                       .map(this.extractData)
                       .catch(this.handleError);
       
   }
 
   removeResponse(responseId): Observable<any>{
+      console.log(`Delete Response ${responseId}`);
       return this.http.delete( this._apiResponseUrl +'/'+ responseId )
                       .map(this.extractData)
                       .catch(this.handleError);
       
   }
 
-  addResponse(resp): Observable<any>{
+  addResponse(resp, responseId = 0): Observable<any>{
       
-      return this.http.post( this._apiResponseUrl, JSON.stringify( resp ) )
+      return this.http.post( this._apiResponseUrl + `?responseId=${responseId}`, JSON.stringify( resp ) )
                       .map(this.extractData)
                       .catch(this.handleError);
       

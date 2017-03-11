@@ -83,7 +83,7 @@ import {NotificationsService} from 'angular2-notifications';
                               </a>
                               <ul class="dropdown-menu">
                                 <li><a [routerLink]="['/admin/view_responses']">Responses</a></li>
-                                <li><a [routerLink]="['/admin/add_response']">New</a></li>
+                                <li><a [routerLink]="['/admin/add_response/0']">New</a></li>
                                 <li class="divider"></li>
                                 <li><a [routerLink]="['/admin/view_images']">Images</a></li>
                                 <li><a [routerLink]="['/admin/add_image']">New</a></li>
@@ -150,7 +150,7 @@ export class HeaderComponent {
             .subscribe( response => {
                     this._loginService.cleanAuthDetails();
                     this._router.navigate(['login']);
-                    this._notification.success('Success', response.success) 
+                    //this._notification.success('Success', response.success) 
                 },
                 error => this._notification.error('Error', error)
             );

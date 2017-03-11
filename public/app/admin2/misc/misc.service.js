@@ -72,18 +72,21 @@ System.register(['@angular/core', '@angular/http', 'rxjs/Observable', 'rxjs/Rx',
                         xhr.send(formData);
                     });
                 };
-                MiscService.prototype.getResponses = function (currentPage, itemsPerPage) {
-                    return this.http.get(this._apiResponseUrl + ("?currentPage=" + currentPage + "&itemsPerPage=" + itemsPerPage))
+                MiscService.prototype.getResponses = function (responseId) {
+                    if (responseId === void 0) { responseId = 0; }
+                    return this.http.get(this._apiResponseUrl + ("?responseId=" + responseId))
                         .map(this.extractData)
                         .catch(this.handleError);
                 };
                 MiscService.prototype.removeResponse = function (responseId) {
+                    console.log("Delete Response " + responseId);
                     return this.http.delete(this._apiResponseUrl + '/' + responseId)
                         .map(this.extractData)
                         .catch(this.handleError);
                 };
-                MiscService.prototype.addResponse = function (resp) {
-                    return this.http.post(this._apiResponseUrl, JSON.stringify(resp))
+                MiscService.prototype.addResponse = function (resp, responseId) {
+                    if (responseId === void 0) { responseId = 0; }
+                    return this.http.post(this._apiResponseUrl + ("?responseId=" + responseId), JSON.stringify(resp))
                         .map(this.extractData)
                         .catch(this.handleError);
                 };

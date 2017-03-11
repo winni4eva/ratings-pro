@@ -33,9 +33,11 @@ class ResponseController extends Controller
      */
     public function store(Request $request)
     {
+        $message = (collect($request)->get('responseId')>0)? 'edited':'saved';
+        
         if($this->responseService->saveResponse($request->all()))
-            return response()->json(['success'=>'Response saved successfully..'], 200);
-        return response()->json(['error'=>'Error saving response..'], 401);
+            return response()->json(['success'=>"Response {$message} successfully.."], 200);
+        return response()->json(['error'=>'Error saving response..'], 403);
     }
 
     /**
@@ -58,7 +60,9 @@ class ResponseController extends Controller
      */
     public function destroy($id)
     {
-        logger("Made it to delete");
-        return response()->json(['success'=>'Response removed successfully..'], 200);
+    
+        if($this->responseService->removeResponse( $id ) )
+            return response()->json(['success'=>'Response removed successfully..'], 200);
+        return response()->json(['error'=>'Error deleting response..'], 403);
     }
 }

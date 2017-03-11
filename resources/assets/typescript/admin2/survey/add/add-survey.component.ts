@@ -210,12 +210,6 @@ export class AddSurveyComponent implements OnInit {
         lastOnBottom: true
     }
 
-    public itemsPerPage: number = 2;
-
-    public totalItems: number = 0;
-
-    public currentPage: number = 1;
-
     private _questionType = [];
 
     private _addQuestionBox = '';
@@ -235,7 +229,7 @@ export class AddSurveyComponent implements OnInit {
             error => console.log(error)
         );
 
-        this._miscService.getResponses(this.currentPage, this.itemsPerPage).subscribe(
+        this._miscService.getResponses().subscribe(
             result => this._responses = result.responses,
             error => console.log(error)
         );

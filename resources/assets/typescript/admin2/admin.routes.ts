@@ -30,7 +30,7 @@ export const AdminRoutes: Routes = [
             { path: 'view_images', component: ViewImageComponent },
             { path: 'add_image', component: AddImageComponent },
             { path: 'view_responses', component: ViewResponseComponent },
-            { path: 'add_response', component: AddResponseComponent },
+            { path: 'add_response/:responseId', component: AddResponseComponent },
             { path: 'report', component: ReportComponent },
             { path: 'branch-surveys/:branchId', component: BranchSurveyComponent },
             { path: 'view_users', component: ViewUserComponent },

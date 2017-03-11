@@ -69,7 +69,7 @@ import { ActivatedRoute } from '@angular/router';
                     </a>
                 </li>
                 <li [ngClass]="{'active': _activeTab=='add_response'}">
-                    <a (click)="setActiveTab('add_response')" [routerLink]="['/admin/add_response']">
+                    <a (click)="setActiveTab('add_response')" [routerLink]="['/admin/add_response/0']">
                         <i class="pe-7s-news-paper"></i>
                         <p>New Response</p>
                     </a>

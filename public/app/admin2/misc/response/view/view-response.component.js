@@ -1,4 +1,4 @@
-System.register(['@angular/core', '../../misc.service', 'angular2-notifications'], function(exports_1, context_1) {
+System.register(['@angular/core', '../../misc.service', 'angular2-notifications', '@angular/router'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['@angular/core', '../../misc.service', 'angular2-notifications'
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, misc_service_1, angular2_notifications_1;
+    var core_1, misc_service_1, angular2_notifications_1, router_1;
     var ViewResponseComponent;
     return {
         setters:[
@@ -22,13 +22,16 @@ System.register(['@angular/core', '../../misc.service', 'angular2-notifications'
             },
             function (angular2_notifications_1_1) {
                 angular2_notifications_1 = angular2_notifications_1_1;
+            },
+            function (router_1_1) {
+                router_1 = router_1_1;
             }],
         execute: function() {
-            //import{ Pagination, PaginatedResult } from '../../../../shared/interfaces/interfaces'
             ViewResponseComponent = (function () {
-                function ViewResponseComponent(_miscService, _notification) {
+                function ViewResponseComponent(_miscService, _notification, _router) {
                     this._miscService = _miscService;
                     this._notification = _notification;
+                    this._router = _router;
                     this._actionValue = [];
                     this._options = {
                         position: ["top", "right"],
@@ -44,23 +47,31 @@ System.register(['@angular/core', '../../misc.service', 'angular2-notifications'
                 };
                 ViewResponseComponent.prototype.getResponses = function () {
                     var _this = this;
-                    this._miscService.getResponses(this.currentPage, this.itemsPerPage).subscribe(function (result) {
+                    this._miscService.getResponses().subscribe(function (result) {
                         _this._responses = result.responses;
                         //this.totalItems = result.responses.total;
                     }, function (error) { return _this._notification.error('Error', error); });
                 };
-                ViewResponseComponent.prototype.action = function (responseId) {
-                    console.log(responseId);
-                    if (!this._actionValue[responseId])
+                ViewResponseComponent.prototype.action = function (index, responseId) {
+                    if (!this._actionValue[index])
                         return;
-                    if (this._actionValue[responseId] == 'delete')
-                        this.removeBook(responseId);
-                    //if(this._actionValue[responseId]=='edit') this.
+                    if (this._actionValue[index] == 'edit') {
+                        var confirmed = confirm("Are you sure you want to edit the selected response");
+                        if (confirmed)
+                            this._router.navigate([("admin/add_response/" + responseId)]);
+                    }
+                    else if (this._actionValue[index] == 'delete') {
+                        var confirmed = confirm("Are you sure you want to remove the selected response");
+                        if (confirmed)
+                            this.removeBook(responseId);
+                    }
                 };
                 ViewResponseComponent.prototype.removeBook = function (responseId) {
                     var _this = this;
                     this._miscService.removeResponse(responseId)
-                        .subscribe(function (result) { return _this._responses = result.responses; }, function (error) { return _this._notification.error('Error', error); }, function () { return _this.getResponses(); });
+                        .subscribe(function (result) {
+                        return _this._notification.success('Success', 'Response removed successfully...');
+                    }, function (error) { return _this._notification.error('Error', error); }, function () { return _this.getResponses(); });
                 };
                 ViewResponseComponent.prototype.ngOnDestroy = function () {
                     //
@@ -68,9 +79,9 @@ System.register(['@angular/core', '../../misc.service', 'angular2-notifications'
                 ViewResponseComponent = __decorate([
                     core_1.Component({
                         selector: 'my-view-response',
-                        template: "\n        <simple-notifications [options]=\"_options\"></simple-notifications>\n\n        <my-content title=\"Responses\">\n            <div class=\"content table-responsive table-full-width\">\n                <table class=\"table table-hover table-striped\">\n                    <thead>\n                        <th>Name</th>\n                        <th>Score</th>\n                        <th>Image</th>\n                        <!--<th>Action</th>-->\n                    </thead>\n                    <tbody>\n                        <tr *ngFor=\"let response of _responses; let i = index\">\n                            <td>{{response?.name}}</td>\n                            <td>{{response?.rater?.score}}</td>\n                            <td><img [src]=\"response?.rater?.image?.src\" style=\"width:50px;height:50px\"/></td>\n                        </tr>\n                    </tbody>\n                </table>\n\n            </div>\n        </my-content>\n    "
+                        template: "\n        <simple-notifications [options]=\"_options\"></simple-notifications>\n\n        <my-content title=\"Responses\">\n            <div class=\"content table-responsive table-full-width\">\n                <table class=\"table table-hover table-striped\">\n                    <thead>\n                        <th>Name</th>\n                        <th>Score</th>\n                        <th>Image</th>\n                        <th>Action</th>\n                    </thead>\n                    <tbody>\n                        <tr *ngFor=\"let response of _responses; let i = index\">\n                            <td>{{response?.name}}</td>\n                            <td>{{response?.rater?.score}}</td>\n                            <td><img [src]=\"response?.rater?.image?.src\" style=\"width:50px;height:50px\"/></td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"_actionValue[i]\" (change)=\"action(i, response?.id)\">\n                                    <option value=\"\">--Select Action--</option>\n                                    <option [value]=\"'edit'\">Edit</option>\n                                    <option [value]=\"'delete'\">Delete</option>\n                                </select>\n                            </td>\n                        </tr>\n                    </tbody>\n                </table>\n\n            </div>\n        </my-content>\n    "
                     }), 
-                    __metadata('design:paramtypes', [misc_service_1.MiscService, angular2_notifications_1.NotificationsService])
+                    __metadata('design:paramtypes', [misc_service_1.MiscService, angular2_notifications_1.NotificationsService, router_1.Router])
                 ], ViewResponseComponent);
                 return ViewResponseComponent;
             }());

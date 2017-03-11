@@ -65,16 +65,13 @@ System.register(['@angular/core', '@angular/forms', '../survey.service', '../../
                         timeOut: 9000,
                         lastOnBottom: true
                     };
-                    this.itemsPerPage = 2;
-                    this.totalItems = 0;
-                    this.currentPage = 1;
                     this._questionType = [];
                     this._addQuestionBox = '';
                 }
                 AddSurveyComponent.prototype.ngOnInit = function () {
                     var _this = this;
                     this._catService.getCategories().subscribe(function (result) { return _this._categories = result.categories; }, function (error) { return console.log(error); });
-                    this._miscService.getResponses(this.currentPage, this.itemsPerPage).subscribe(function (result) { return _this._responses = result.responses; }, function (error) { return console.log(error); });
+                    this._miscService.getResponses().subscribe(function (result) { return _this._responses = result.responses; }, function (error) { return console.log(error); });
                     this.form = this._fb.group({
                         survey: this.initSurvey(),
                         questions: this._fb.array([
