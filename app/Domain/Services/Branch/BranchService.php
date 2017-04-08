@@ -30,9 +30,9 @@ class BranchService
      * @param array $fields
      * @return mixed
      */
-    public function getBranches($request, $fields = [])
+    public function getBranches($request = [], $fields = [])
     {
-        return $this->branchRepo->get($request);
+        return $this->branchRepo->get($request, $fields);
     }
 
     /**

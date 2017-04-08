@@ -16,6 +16,7 @@ class SurveyController extends Controller
     protected $userService;
 
     public function __construct(SurveyService $surveyService, UserService $userService){
+        $old = ini_set('memory_limit', '8192M'); 
         $this->surveyService = $surveyService;
         $this->userService = $userService;
     }
@@ -29,8 +30,9 @@ class SurveyController extends Controller
         //$surveys = $this->userService->getUserSurveys($this->guard()->user()->id);
 
         //$branchSurveys = collect( collect($surveys)->get(0) )->get('branches');
-
+        logger('Made It');
         $surveys = $this->surveyService->getSurveys();
+        logger('Here');
     
         return response()->json(compact('surveys'),200);
     }

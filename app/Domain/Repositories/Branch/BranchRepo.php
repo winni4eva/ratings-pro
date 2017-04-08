@@ -3,14 +3,25 @@ namespace App\Domain\Repositories\Branch;
 
 use App\Branch;
 use App\User;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+// use App\Domain\Services\Zone\ZoneService;
+// use App\Domain\Services\Branch\BranchService;
 
 class BranchRepo implements BranchRepoInterface
 {
+    use AuthenticatesUsers;
+
     protected $model;
+
+    // protected $zoneService;
+
+    // protected $branchService;
 
     public function __construct(Branch $branch)
     {
         $this->model = $branch;
+        // $this->zoneService = $zoneService;
+        // $this->branchService = $branchService;
     }
 
     /**
@@ -32,14 +43,28 @@ class BranchRepo implements BranchRepoInterface
      * @return mixed
      */
     public function get(array $request, array $fields = []){
-        if(collect($fields)->count()>0)
-        {
-            foreach($fields as $field) $query = $this->model->where($field, $request[$field]);
+        // if(collect($fields)->count()>0)
+        // {
+        //     foreach($fields as $field) $query = $this->model->where($field, $request[$field]);
 
-            return $query->get();
+        //     return $query->get();
+        // }
+
+        $allowedBranches = [];
+
+        if($this->guard()->user()->role=='zonal'){
+            //$zone = $this->zoneService->findZone( $this->guard()->user()->role_branch_zone_id );
+            //$allowedBranches = collect(collect($zone)->get('zone_branches'))->pluck('branch_id')->toArray();
+            $zone = \App\Zone::with('zoneBranches')->find( $this->guard()->user()->role_branch_zone_id );
+            $allowedBranches = collect(collect($zone)->get('zone_branches'))->pluck('branch_id')->toArray();
+        }elseif($this->guard()->user()->role=='branch'){
+            $allowedBranches = [ $this->guard()->user()->role_branch_zone_id ];
+        }elseif($this->guard()->user()->role=='admin'){
+            //$allowedBranches = collect($this->branchService->getBranches())->pluck('id')->toArray();
+            $allowedBranches = \App\Branch::pluck('id')->toArray();
         }
 
-        return $this->model->with('surveys')->get();
+        return $this->model->with('surveys')->whereIn('id', $allowedBranches)->get();
     }
 
     /**
@@ -66,9 +91,9 @@ class BranchRepo implements BranchRepoInterface
     //     return [];
     // }
 
-    public function getBranchesSurveysReport($request){
+    public function getBranchesSurveysReport($request, $branches){
         
-        $branchSurveys = $this->model->with('surveyCountRelation')->get();
+        $branchSurveys = $this->model->with('surveyCountRelation')->whereIn('id', $branches)->get();
 
         $branches = [];
         $chart = [];

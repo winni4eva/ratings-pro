@@ -36,5 +36,6 @@ Route::group(['prefix' => 'v1','middleware' => 'auth:api'], function () {
     Route::resource('reports','ReportController');
     Route::resource('branch_surveys','BranchSurveyController');
     Route::resource('users','UserController');
+    Route::resource('zones','ZoneController');
     Route::get('branch_surveys/survey/{surveyId}/branch/{branchId}','BranchSurveyController@destroy');
 });

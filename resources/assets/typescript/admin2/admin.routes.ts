@@ -15,6 +15,7 @@ import { ReportComponent } from './report/report.component';
 import { BranchSurveyComponent } from './branch/branchSurveys/branch-surveys.component';
 import { AddUserComponent } from './user/add/add-user.component';
 import { ViewUserComponent } from './user/view/view-user.component';
+import { AddZoneComponent } from './zones/add/add-zone.component';
  
 export const AdminRoutes: Routes = [
     {
@@ -34,7 +35,8 @@ export const AdminRoutes: Routes = [
             { path: 'report', component: ReportComponent },
             { path: 'branch-surveys/:branchId', component: BranchSurveyComponent },
             { path: 'view_users', component: ViewUserComponent },
-            { path: 'add_user', component: AddUserComponent},
+            { path: 'add_user/:userId', component: AddUserComponent},
+            { path: 'add_zone', component: AddZoneComponent},
             { path: '', component: ViewBranchComponent },
         ],
         canActivate:[AuthGuard]

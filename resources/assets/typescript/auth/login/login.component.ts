@@ -102,9 +102,10 @@ export class LoginComponent implements OnInit {
 
         this._loginService.postLogin(model)
             .subscribe( response => {
-                    //console.log(response);
                     this._loginService.setAuthDetails(response);
-                    this.router.navigate(['admin']); 
+                    //if(response.user[0].role=='admin')
+                        //this.router.navigate(['admin']);
+                    this.router.navigate(['admin/report']);
                 },
                 error => {
                     console.log(error);

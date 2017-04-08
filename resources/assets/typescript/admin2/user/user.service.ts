@@ -14,8 +14,8 @@ export class UserService {
                 private _storage: StorageService) {}
 
   
-  getUsers(): Observable<any>{
-      return this.http.get( this._apiUsersUrl + `?resource=users` )
+  getUsers(userId = 0): Observable<any>{
+      return this.http.get( this._apiUsersUrl + `?resource=users&id=${userId}` )
                       .map(this.extractData)
                       .catch(this.handleError);
       
@@ -28,8 +28,8 @@ export class UserService {
       
   //}
 
-  addUser(user): Observable<any>{
-      return this.http.post( this._apiUsersUrl, JSON.stringify( user ) )
+  addUser(user, userId=0): Observable<any>{
+      return this.http.post( this._apiUsersUrl + `?id=${userId}`, JSON.stringify( user ) )
                       .map(this.extractData)
                       .catch(this.handleError);
   }

@@ -34,8 +34,9 @@ System.register(['@angular/core', '@angular/http', 'rxjs/Observable', 'rxjs/Rx',
                     this._storage = _storage;
                     this._apiUsersUrl = '/api/v1/users';
                 }
-                UserService.prototype.getUsers = function () {
-                    return this.http.get(this._apiUsersUrl + "?resource=users")
+                UserService.prototype.getUsers = function (userId) {
+                    if (userId === void 0) { userId = 0; }
+                    return this.http.get(this._apiUsersUrl + ("?resource=users&id=" + userId))
                         .map(this.extractData)
                         .catch(this.handleError);
                 };
@@ -44,8 +45,9 @@ System.register(['@angular/core', '@angular/http', 'rxjs/Observable', 'rxjs/Rx',
                 //                   .map(this.extractData)
                 //                   .catch(this.handleError);
                 //}
-                UserService.prototype.addUser = function (user) {
-                    return this.http.post(this._apiUsersUrl, JSON.stringify(user))
+                UserService.prototype.addUser = function (user, userId) {
+                    if (userId === void 0) { userId = 0; }
+                    return this.http.post(this._apiUsersUrl + ("?id=" + userId), JSON.stringify(user))
                         .map(this.extractData)
                         .catch(this.handleError);
                 };

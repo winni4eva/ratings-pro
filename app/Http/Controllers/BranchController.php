@@ -16,6 +16,7 @@ class BranchController extends Controller
     protected $userService;
 
     public function __construct(BranchService $branchService, UserService $userService){
+        $old = ini_set('memory_limit', '8192M'); 
         $this->branchService = $branchService;
         $this->userService = $userService;
     }
@@ -26,6 +27,7 @@ class BranchController extends Controller
      */
     public function index(Request $request)
     {
+        logger($request);
 
        //$branches = $this->userService->getUserBranches($this->guard()->user()->id);
 

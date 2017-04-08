@@ -90,12 +90,12 @@ export class ViewResponseComponent implements OnInit, OnDestroy {
         }else if(this._actionValue[index] == 'delete'){
             let confirmed = confirm("Are you sure you want to remove the selected response");
             if (confirmed) 
-                this.removeBook( responseId );
+                this.remove( responseId );
         }
     
     }
 
-    removeBook(responseId){
+    remove(responseId){
         this._miscService.removeResponse(responseId)
                 .subscribe( 
                                 result => 

@@ -13,6 +13,8 @@ export class AddUserInterface{
 
     branch_id: number;
 
-    admin: boolean;
+    role: string;
+
+    zone_id: number;
     
 }

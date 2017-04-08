@@ -63,10 +63,10 @@ System.register(['@angular/core', '../../misc.service', 'angular2-notifications'
                     else if (this._actionValue[index] == 'delete') {
                         var confirmed = confirm("Are you sure you want to remove the selected response");
                         if (confirmed)
-                            this.removeBook(responseId);
+                            this.remove(responseId);
                     }
                 };
-                ViewResponseComponent.prototype.removeBook = function (responseId) {
+                ViewResponseComponent.prototype.remove = function (responseId) {
                     var _this = this;
                     this._miscService.removeResponse(responseId)
                         .subscribe(function (result) {

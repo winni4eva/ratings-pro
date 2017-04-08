@@ -31,21 +31,21 @@ class ReportService
      * @param array $paginate
      * @return mixed
      */
-    public function getRatingsRawDataReport(array $request)
+    public function getRatingsRawDataReport(array $request, array $branches)
     {
-        return $this->ratingRepo->ratingsRawDataReport( $request );
+        return $this->ratingRepo->ratingsRawDataReport( $request, $branches );
     }
 
-    public function getOverview(array $request){
-        return $this->branchRepo->getBranchesSurveysReport( $request );
+    public function getOverview(array $request, array $branches){
+        return $this->branchRepo->getBranchesSurveysReport( $request, $branches );
     }
 
-    public function getSurveys(array $request){
-        return $this->surveyRepo->getSurveyRatingsReport( $request );
+    public function getSurveys(array $request, array $branches){
+        return $this->surveyRepo->getSurveyRatingsReport( $request, $branches );
     }
 
-    public function getRawDataOverview(array $request){
-        return $this->ratingRepo->getRatingrawDataReport( $request );
+    public function getRawDataOverview(array $request, array $branches){
+        return $this->ratingRepo->getRatingrawDataReport( $request, $branches );
     }
 
 }

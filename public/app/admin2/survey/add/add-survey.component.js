@@ -136,7 +136,7 @@ System.register(['@angular/core', '@angular/forms', '../survey.service', '../../
                     });
                 };
                 AddSurveyComponent.prototype.addQuestion = function (qtnType) {
-                    console.log(qtnType);
+                    //console.log(qtnType);
                     var control = this.form.controls['questions'];
                     control.push(this.initQuestion(qtnType));
                     this._questionType[control.length - 1] = qtnType;
@@ -147,10 +147,10 @@ System.register(['@angular/core', '@angular/forms', '../survey.service', '../../
                 };
                 AddSurveyComponent.prototype.addResponse = function (parentIndex) {
                     var control = this.form.controls['questions'].controls[parentIndex].controls['responses'];
-                    if (control.length === 5) {
-                        alert("Limit of 5 responses reached.");
-                        return;
-                    }
+                    // if( control.length === 5 ) {
+                    //     alert("Limit of 5 responses reached.");
+                    //     return;
+                    // }
                     control.push(this.initResponse());
                 };
                 AddSurveyComponent.prototype.removeResponse = function (parentIndex, childIndex) {

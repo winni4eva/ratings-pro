@@ -26,7 +26,7 @@ class RatingRepo implements RatingRepoInterface
         }
     }
 
-    public function ratingsRawDataReport($request){
+    public function ratingsRawDataReport($request, $branches){
         
         $ratings = $this->model->select('surveys.title', 'responses.name', 'raters.score','r.sum', 'r.total', DB::raw('(raters.score*count(ratings.response_id))/r.total as average'), DB::raw('count(ratings.response_id) as count') )
                         ->leftjoin('surveys', 'ratings.survey_id', '=', 'surveys.id')
@@ -34,6 +34,7 @@ class RatingRepo implements RatingRepoInterface
                         //->leftjoin('responses as previousResponse', 'ratings.previous_response_id', '=', 'responses.id')
                         ->leftjoin('raters', 'ratings.response_id', '=', 'raters.response_id')
                         ->leftJoin(DB::raw('(SELECT SUM(score) AS sum, COUNT(*) as total FROM raters) as r'),'ratings.response_id', '=', 'raters.response_id')
+                        ->whereIn('ratings.branch_id', $branches)
                         ->groupBy('surveys.title','responses.name','raters.score','r.sum','r.total');
 
         if(collect($request)->get('branchId')){
@@ -60,34 +61,46 @@ class RatingRepo implements RatingRepoInterface
         return new \DateTime( date( $format, strtotime( $period ) ) );
     }
 
-    public function getRatingrawDataReport(array $request){
+    public function getRatingrawDataReport(array $request, array $branches){
+
+        $branchRatings = \App\Branch::with(['ratings'=>function($q){
+            $q->with(
+                'survey',
+                'previousResponse',
+                'question',
+                'branch',
+                'response.rater.image'
+            );
+        }])->whereIn('id', $branches)->get();
+
+        $ratings = collect($branchRatings->pluck('ratings')[0]);
           
-        $ratings = $this->model->with(
-                    [
-                        'survey',
-                        'previousResponse',
-                        'question',
-                        'branch',
-                        'response.rater.image'
-                    ]);
+        // $ratings = $this->model->with(
+        //             [
+        //                 'survey',
+        //                 'previousResponse',
+        //                 'question',
+        //                 'branch',
+        //                 'response.rater.image'
+        //             ]);
         
         if(collect($request)->get('branchId')){
-            $ratings = $ratings->where('branch_id', collect($request)->get('branchId'));
+            $ratings = $ratings->where('branch_id', collect($request)->get('branchId'))->all();
         }elseif(collect($request)->get('surveyId')){
-            $ratings = $ratings->where('survey_id', collect($request)->get('surveyId'));
+            $ratings = $ratings->where('survey_id', collect($request)->get('surveyId'))->all();
         }
 
         if(collect($request)->get('from') && collect($request)->get('to')){
-            $ratings = $ratings->whereBetween(
-                                'created_at', 
-                                [
-                                    $this->getDateTimeDate( $request['from'])->format('Y-m-d H:i:s'), 
-                                    $this->getDateTimeDate( $request['to'])->format('Y-m-d H:i:s')
-                                ]
-                            );
+            // $ratings = $ratings->whereBetween(
+            //                     'created_at', 
+            //                     [
+            //                         $this->getDateTimeDate( $request['from'])->format('Y-m-d H:i:s'), 
+            //                         $this->getDateTimeDate( $request['to'])->format('Y-m-d H:i:s')
+            //                     ]
+            //                 );
         }
 
-        return $ratings->get();            
+        return $ratings;            
     }
 
 }

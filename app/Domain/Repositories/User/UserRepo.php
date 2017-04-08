@@ -20,17 +20,28 @@ class UserRepo implements UserRepoInterface
      */
     public function save(array $request)
     {
-        $user = $this->model->create([
+
+        $role_branch_zone_id = ($request['role']=='branch')
+                                ? $request['branch_id']
+                                : ($request['role']=='zonal')
+                                ? $request['zone_id']
+                                : 0;
+        
+        $user = $this->model->updateOrCreate(['id'=> collect($request)->get('id')],[
             'email' => $request['email'],
             'first_name' => $request['first_name'],
             'last_name' => $request['last_name'],
             'company' => $request['company'],
+            'role' => $request['role'],
+            'role_branch_zone_id' => $role_branch_zone_id,
             'password' => array_key_exists('passwords', $request)
                             ? bcrypt($request["passwords"]['password']) 
                             : bcrypt($request['password']),
         ]);
 
-        $user->branchUser()->create(['branch_id' => $request['branch_id'], 'admin' => $request['admin']]);
+        //$request['admin']
+
+        $user->branchUser()->create(['branch_id' => $request['branch_id'], 'admin' => 0 ]);
 
         return $user;
     }
@@ -43,6 +54,10 @@ class UserRepo implements UserRepoInterface
      */
     public function get(array $request, array $fields = [])
     {
+        if(collect($request)->get('id') > 0)
+            return $this->model->with(['branchUser'=>function($q){
+                $q->limit(1);
+            }])->find( collect($request)->get('id') );
 
         if(collect($fields)->count()>0)
         {

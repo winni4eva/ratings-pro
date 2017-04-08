@@ -196,6 +196,7 @@ return [
         App\Domain\Repositories\Rating\RatingRepoServiceProvider::class,
         App\Domain\Repositories\ProbeQuestion\ProbeQuestionRepoServiceProvider::class,
         App\Domain\Repositories\BranchSurvey\BranchSurveyRepoServiceProvider::class,
+        App\Domain\Repositories\Zone\ZoneRepoServiceProvider::class,
 
     ],
 

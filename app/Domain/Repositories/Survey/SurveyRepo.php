@@ -2,14 +2,25 @@
 namespace App\Domain\Repositories\Survey;
 
 use App\Survey;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+// use App\Domain\Services\Zone\ZoneService;
+// use App\Domain\Services\Branch\BranchService;
 
 class SurveyRepo implements SurveyRepoInterface
 {
+    use AuthenticatesUsers;
+
     protected $model;
+
+    // protected $zoneService;
+
+    // protected $branchService;
 
     public function __construct(Survey $response)
     {
         $this->model = $response;
+        // $this->zoneService = $zoneService;
+        // $this->branchService = $branchService;
     }
 
     /**
@@ -34,12 +45,35 @@ class SurveyRepo implements SurveyRepoInterface
      */
     public function get()
     {
+        $allowedBranches = [];
+
+        if($this->guard()->user()->role=='zonal'){
+            //$zone = $this->zoneService->findZone( $this->guard()->user()->role_branch_zone_id );
+            //$allowedBranches = collect(collect($zone)->get('zone_branches'))->pluck('branch_id')->toArray();
+            $zone = \App\Zone::with('zoneBranches')->find( $this->guard()->user()->role_branch_zone_id );
+            $allowedBranches = collect(collect($zone)->get('zone_branches'))->pluck('branch_id')->toArray();
+        }elseif($this->guard()->user()->role=='branch'){
+            $allowedBranches = [ $this->guard()->user()->role_branch_zone_id ];
+        }elseif($this->guard()->user()->role=='admin'){
+            //$allowedBranches = collect($this->branchService->getBranches())->pluck('id')->toArray();
+            $allowedBranches = \App\Branch::pluck('id')->toArray();
+        }
+
+        $branchSurveys = \App\Branch::with('surveys.category')->whereIn('id', $allowedBranches)->get();
+
+        return $branchSurveys->pluck('surveys')[0];
+
         return $this->model->with('category')->get();
     }
 
-    public function getSurveyRatingsReport($request){
+    public function getSurveyRatingsReport($request, $branches){
         
-        $surveys = $this->model->with('ratings')->get();
+        //$surveys = $this->model->with('ratings')->get();
+
+        $branchSurveys = \App\Branch::with('surveys.ratings')->whereIn('id', $branches)->get();
+
+        //logger($branchSurveys->pluck('surveys'));
+        $surveys = $branchSurveys->pluck('surveys')[0];
 
         $data = [];
         $chart = [];

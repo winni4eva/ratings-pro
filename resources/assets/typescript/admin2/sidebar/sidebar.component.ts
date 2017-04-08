@@ -23,65 +23,67 @@ import { ActivatedRoute } from '@angular/router';
             </div>
 
             <ul class="nav">
-                <li [ngClass]="{'active': _activeTab=='view_surveys'}">
+
+                <li [ngClass]="{'active': _activeTab=='view_surveys'}" *ngIf="_info[0]?.role == 'admin'">
                     <a (click)="setActiveTab('view_surveys')" [routerLink]="['/admin/view_surveys']">
                         <i class="pe-7s-graph"></i>
                         <p>Surveys</p>
                     </a>
                 </li>
-                <li [ngClass]="{'active': _activeTab=='add_survey'}">
+
+                <li [ngClass]="{'active': _activeTab=='add_survey'}" *ngIf="_info[0]?.role == 'admin'">
                     <a (click)="setActiveTab('add_survey')" [routerLink]="['/admin/add_survey']">
                         <i class="pe-7s-graph"></i>
                         <p>New Survey</p>
                     </a>
                 </li>
 
-                <li [ngClass]="{'active': _activeTab=='view_branches'}">
+                <li [ngClass]="{'active': _activeTab=='view_branches'}" *ngIf="_info[0]?.role == 'admin'">
                     <a (click)="setActiveTab('view_branches')" [routerLink]="['/admin/view_branches']">
                         <i class="pe-7s-user"></i>
                         <p>Branches</p>
                     </a>
                 </li>
-                <li [ngClass]="{'active': _activeTab=='add_branch'}">
+                <li [ngClass]="{'active': _activeTab=='add_branch'}" *ngIf="_info[0]?.role == 'admin'">
                     <a (click)="setActiveTab('add_branch')" [routerLink]="['/admin/add_branch']">
                         <i class="pe-7s-user"></i>
                         <p>New Branch</p>
                     </a>
                 </li>
 
-                <li [ngClass]="{'active': _activeTab=='view_categories'}">
+                <li [ngClass]="{'active': _activeTab=='view_categories'}" *ngIf="_info[0]?.role == 'admin'">
                     <a (click)="setActiveTab('view_categories')" [routerLink]="['/admin/view_categories']">
                         <i class="pe-7s-note2"></i>
                         <p>Categories</p>
                     </a>
                 </li>
-                <li [ngClass]="{'active': _activeTab=='add_category'}">
+                <li [ngClass]="{'active': _activeTab=='add_category'}" *ngIf="_info[0]?.role == 'admin'">
                     <a (click)="setActiveTab('add_category')" [routerLink]="['/admin/add_category']">
                         <i class="pe-7s-note2"></i>
                         <p>New Category</p>
                     </a>
                 </li>
 
-                <li [ngClass]="{'active': _activeTab=='view_responses'}">
+                <li [ngClass]="{'active': _activeTab=='view_responses'}" *ngIf="_info[0]?.role == 'admin'">
                     <a (click)="setActiveTab('view_responses')" [routerLink]="['/admin/view_responses']">
                         <i class="pe-7s-news-paper"></i>
                         <p>Responses</p>
                     </a>
                 </li>
-                <li [ngClass]="{'active': _activeTab=='add_response'}">
+                <li [ngClass]="{'active': _activeTab=='add_response'}" *ngIf="_info[0]?.role == 'admin'">
                     <a (click)="setActiveTab('add_response')" [routerLink]="['/admin/add_response/0']">
                         <i class="pe-7s-news-paper"></i>
                         <p>New Response</p>
                     </a>
                 </li>
 
-                <li [ngClass]="{'active': _activeTab=='view_images'}">
+                <li [ngClass]="{'active': _activeTab=='view_images'}" *ngIf="_info[0]?.role == 'admin'">
                     <a (click)="setActiveTab('view_images')" [routerLink]="['/admin/view_images']">
                         <i class="pe-7s-science"></i>
                         <p>Images</p>
                     </a>
                 </li>
-                <li [ngClass]="{'active': _activeTab=='add_image'}">
+                <li [ngClass]="{'active': _activeTab=='add_image'}" *ngIf="_info[0]?.role == 'admin'">
                     <a (click)="setActiveTab('add_image')" [routerLink]="['/admin/add_image']">
                         <i class="pe-7s-science"></i>
                         <p>New Image</p>
@@ -93,6 +95,7 @@ import { ActivatedRoute } from '@angular/router';
                         <p>Reports</p>
                     </a>
                 </li>
+                
                 <!--
                 <li>
                     <a href="notifications.html">

@@ -312,7 +312,7 @@ export class AddSurveyComponent implements OnInit {
     }
 
     addQuestion(qtnType) {
-        console.log(qtnType);
+        //console.log(qtnType);
         const control = <FormArray>this.form.controls['questions'];
         control.push(this.initQuestion(qtnType));
         this._questionType[control.length-1]=qtnType;
@@ -325,10 +325,10 @@ export class AddSurveyComponent implements OnInit {
 
     addResponse(parentIndex: number) {
         const control = <FormArray>this.form.controls['questions'].controls[parentIndex].controls['responses'];
-        if( control.length === 5 ) {
-            alert("Limit of 5 responses reached.");
-            return;
-        }
+        // if( control.length === 5 ) {
+        //     alert("Limit of 5 responses reached.");
+        //     return;
+        // }
         control.push(this.initResponse());
     }
 

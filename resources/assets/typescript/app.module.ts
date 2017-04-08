@@ -31,6 +31,7 @@ import { AddUserComponent } from './admin2/user/add/add-user.component';
 import { ViewUserComponent } from './admin2/user/view/view-user.component';
 import { ReportComponent } from './admin2/report/report.component';
 import { BranchSurveyComponent } from './admin2/branch/branchSurveys/branch-surveys.component';
+import { AddZoneComponent } from './admin2/zones/add/add-zone.component';
 import { ZingChart } from './admin2/chart/zingchart.component';
 import { Modal } from './shared/modal/modal.component';
 // import { ContentHeaderComponent } from './admin/content/header/content-header.component';
@@ -62,6 +63,7 @@ import { FileService } from './shared/file-generator/file.service';
 import { HomeService } from './home/home.service';
 import { ReportService } from './admin2/report/report.service';
 import { UserService } from './admin2/user/user.service';
+import { ZoneService } from './admin2/zones/zones.service';
 //import { Ng2PaginationModule } from 'ng2-pagination';
 //import {PaginatePipe, PaginationService} from 'ng2-pagination';
 import { MyDatePickerModule } from 'mydatepicker';
@@ -82,7 +84,8 @@ import {Ng2PaginationModule} from 'ng2-pagination'; //importing ng2-pagination
                     HeaderComponent, ContentComponent, ViewBranchComponent, FooterComponent,
                     AddBranchComponent, ViewCategoryComponent, AddCategoryComponent, ViewSurveyComponent,
                     AddSurveyComponent, ViewImageComponent, AddImageComponent, ViewResponseComponent, AddResponseComponent,
-                    ReportComponent, ZingChart, Modal, BranchSurveyComponent, AddUserComponent, ViewUserComponent
+                    ReportComponent, ZingChart, Modal, BranchSurveyComponent, AddUserComponent, ViewUserComponent,
+                    AddZoneComponent
                    // HeaderComponent, SideBarComponent, ContentHeaderComponent, BoxesComponent,
                    // TabsComponent, AddUserComponent, ViewUserComponent, AddSurverComponent,
                    // ViewSurveyComponent, AddBranchComponent, ViewBranchComponent, MiscComponent, AddCategoryComponent 
@@ -92,7 +95,7 @@ import {Ng2PaginationModule} from 'ng2-pagination'; //importing ng2-pagination
         XHRBackend, BrowserXhr, 
         BranchService, CategoryService, SurveyService, MiscService,
         NotificationsService, FileService, HomeService, ReportService,
-        ModalService, UserService,
+        ModalService, UserService, ZoneService,
         { provide: RequestOptions, useClass: MyRequestOptions },
         {   provide: Http,
             useFactory: (backend: XHRBackend, defaultOptions: RequestOptions) => new CustomHttp(backend, defaultOptions),

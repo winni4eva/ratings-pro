@@ -44,16 +44,18 @@ import {NotificationsService} from 'angular2-notifications';
                                 <li><a href="#">Another notification</a></li>
                               </ul>
                         </li>
-                        -->
+                        
                         <li>
                            <a href="">
                                 <i class="fa fa-search"></i>
                             </a>
                         </li>
+                        -->
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
-                        <li class="dropdown">
+
+                        <li class="dropdown" *ngIf="_info[0]?.role == 'admin'">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     Branch
                                     <b class="caret"></b>
@@ -63,7 +65,8 @@ import {NotificationsService} from 'angular2-notifications';
                                 <li><a [routerLink]="['/admin/add_branch']">New</a></li>
                               </ul>
                         </li>
-                        <li class="dropdown">
+
+                        <li class="dropdown" *ngIf="_info[0]?.role == 'admin'">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     Survey
                                     <b class="caret"></b>
@@ -76,7 +79,8 @@ import {NotificationsService} from 'angular2-notifications';
                                 <li><a [routerLink]="['/admin/add_survey']">New</a></li>
                               </ul>
                         </li>
-                        <li class="dropdown">
+
+                        <li class="dropdown" *ngIf="_info[0]?.role == 'admin'">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     Misc
                                     <b class="caret"></b>
@@ -89,16 +93,29 @@ import {NotificationsService} from 'angular2-notifications';
                                 <li><a [routerLink]="['/admin/add_image']">New</a></li>
                               </ul>
                         </li>
-                        <li class="dropdown">
+
+                        <li class="dropdown" *ngIf="_info[0]?.role == 'admin'">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     User
                                     <b class="caret"></b>
                               </a>
                               <ul class="dropdown-menu">
                                 <li><a [routerLink]="['/admin/view_users']">Users</a></li>
-                                <li><a [routerLink]="['/admin/add_user']">New</a></li>
+                                <li><a [routerLink]="['/admin/add_user/0']">New</a></li>
                               </ul>
                         </li>
+
+                        <li class="dropdown" *ngIf="_info[0]?.role == 'admin'">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    Zone
+                                    <b class="caret"></b>
+                              </a>
+                              <ul class="dropdown-menu">
+                                <li><a [routerLink]="['/admin/view_zones']">Zones</a></li>
+                                <li><a [routerLink]="['/admin/add_zone']">New</a></li>
+                              </ul>
+                        </li>
+
                         <li class="dropdown">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     SideBar Color
@@ -110,6 +127,7 @@ import {NotificationsService} from 'angular2-notifications';
                                 </li>
                               </ul>
                         </li>
+
                         <li>
                             <a (click)="logout()" style="cursor:pointer">
                                 Log out [ {{_info[0]?.first_name}} ]
@@ -142,6 +160,7 @@ export class HeaderComponent {
 
         this._info = (this._storageService.get('rUser'))?
                         JSON.parse(this._storageService.get('rUser')) : {};
+
     }
 
     logout(){

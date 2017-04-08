@@ -38,7 +38,7 @@ class UserController extends Controller
                 $resource = ['surveys' => $questionaires, 'branch_id' => collect($surveys)->get(1)];
                 break;
             case 'users':
-                $resource = $this->userService->getUser([], []);
+                $resource = $this->userService->getUser($request->all(), []);
                 break;
             default:
                 $resource = $this->userService->getUser([], []);

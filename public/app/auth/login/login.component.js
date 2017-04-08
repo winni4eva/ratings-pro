@@ -59,9 +59,10 @@ System.register(['@angular/core', '@angular/forms', '../../shared/validator/cust
                         return;
                     this._loginService.postLogin(model)
                         .subscribe(function (response) {
-                        //console.log(response);
                         _this._loginService.setAuthDetails(response);
-                        _this.router.navigate(['admin']);
+                        if (response.user[0].role == 'admin')
+                            _this.router.navigate(['admin']);
+                        _this.router.navigate(['admin/report']);
                     }, function (error) {
                         console.log(error);
                         _this._notification.error('Error', error);

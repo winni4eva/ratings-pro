@@ -8,6 +8,7 @@ use App\Category;
 use App\Survey;
 use App\Rating;
 use App\BranchSurvey;
+use App\BranchZone;
 
 class Branch extends Model
 {
@@ -46,5 +47,9 @@ class Branch extends Model
                         ->selectRaw('branch_id, survey_id, count(surveys.id) as aggregate')
                         ->groupBy('branch_id','survey_id');
 
+    }
+
+    public function branchZones(){
+        return $this->hasMany(BranchZone::class);
     }
 }
