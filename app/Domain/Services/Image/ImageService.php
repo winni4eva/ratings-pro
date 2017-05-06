@@ -33,4 +33,14 @@ class ImageService
         return $this->imageRepo->get();
     }
 
+    /**
+     * Remove Image
+     *
+     * @return mixed
+     */
+    public function removeImage($id)
+    {
+        return $this->imageRepo->remove($id);
+    }
+
 }

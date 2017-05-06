@@ -92,7 +92,7 @@ export class AddCategoryComponent implements OnInit {
         
         this.form = new FormGroup({
             name: new FormControl('', [Validators.required]),
-            image_id: new FormControl('', [Validators.required])
+            image_id: new FormControl('')
         });
     }
 

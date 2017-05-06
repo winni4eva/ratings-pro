@@ -44,6 +44,16 @@ System.register(['@angular/core', '@angular/http', 'rxjs/Observable', 'rxjs/Rx',
                         .map(this.extractData)
                         .catch(this.handleError);
                 };
+                ZoneService.prototype.addZoneBranch = function (branchId, zoneId) {
+                    return this.http.post(this._apiZonesUrl + "/zone_branches", JSON.stringify({ branch_id: branchId, zone_id: zoneId }))
+                        .map(this.extractData)
+                        .catch(this.handleError);
+                };
+                ZoneService.prototype.removeZoneBranch = function (branchId, zoneId) {
+                    return this.http.get(this._apiZonesUrl + ("/branch_id/" + branchId + "/zone_id/" + zoneId + "/zone_branches"))
+                        .map(this.extractData)
+                        .catch(this.handleError);
+                };
                 ZoneService.prototype.extractData = function (res) {
                     return res.json() || {};
                 };

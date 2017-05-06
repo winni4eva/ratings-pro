@@ -20,7 +20,10 @@ class CategoryRepo implements CategoryRepoInterface
      */
     public function save(array $request)
     {
-        return $this->model->create($request);
+        return $this->model->create([
+            'name' => collect( $request)->get('name') ,
+            'image_id' => ( collect( $request )->get('image_id') )? collect( $request )->get('image_id'):0 ,
+        ]);
     }
 
     /**

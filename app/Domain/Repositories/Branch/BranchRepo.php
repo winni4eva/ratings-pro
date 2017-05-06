@@ -4,6 +4,7 @@ namespace App\Domain\Repositories\Branch;
 use App\Branch;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use DB;
 // use App\Domain\Services\Zone\ZoneService;
 // use App\Domain\Services\Branch\BranchService;
 
@@ -93,17 +94,62 @@ class BranchRepo implements BranchRepoInterface
 
     public function getBranchesSurveysReport($request, $branches){
         
-        $branchSurveys = $this->model->with('surveyCountRelation')->whereIn('id', $branches)->get();
+        $ratings = \App\Rating::select('surveys.title', 'branches.name' , 'responses.name as responseName', 'raters.score', DB::raw('COUNT(ratings.response_id) as numberOfResponses'), DB::raw('( COUNT(ratings.response_id)*raters.score) as totalScore') )
+                        ->leftjoin('surveys', 'ratings.survey_id', '=', 'surveys.id')
+                        ->leftjoin('branches', 'ratings.branch_id', '=', 'branches.id')
+                        ->leftjoin('responses', 'ratings.response_id', '=', 'responses.id')
+                        ->leftjoin('raters', 'ratings.response_id', '=', 'raters.response_id')
+                        //->leftJoin(DB::raw('(SELECT SUM(score) AS sum, COUNT(*) as total FROM raters) as r'),'ratings.response_id', '=', 'raters.response_id')
+                        //->leftJoin(DB::raw('(SELECT COUNT(*) as totalResponses FROM rat) as r'),'ratings.response_id', '=', 'raters.response_id')
+                        //->whereIn('ratings.branch_id', $branches)
+                        //->groupBy('surveys.title','branches.name','raters.score','r.sum','r.total')
+                        ->groupBy('surveys.title','branches.name', DB::raw('responseName'), 'raters.score' )
+                        ->get();
 
-        $branches = [];
-        $chart = [];
-        collect($branchSurveys)->flatMap(function($branch) use(&$branches){
-            $branches[] =  [ 
-                        'text' => $branch->name, 
-                        'values' => [collect( $branch->surveyCountRelation )->count()] 
-                    ];       
+        $branchRatings = [];
+
+        $grouped = collect($ratings)->groupBy('name');
+
+        $data = $grouped->toArray();
+        $allSurveys = \App\Survey::pluck('id','title')->all();
+        $allBranches = \App\Branch::pluck('name')->all();
+
+        $allSurveys = collect($allSurveys)->transform(function ($item, $key) {
+            return 0;
         });
+        
+        foreach ($allBranches as $key => $value) {
+            if( !(collect($branchRatings)->pluck("text")->search($value) > -1) )
+                $branchRatings[] = ["text" => $value, "values" => $allSurveys->all() ];
+        }
 
+        
+        foreach($data as $branch => $surveys){  
+            if( !(collect($branchRatings)->pluck("text")->search($branch) > -1) )
+                $branchRatings[] = ["text" => $branch, "values" => $allSurveys->all() ];
+            
+            $surveys = collect($surveys)->groupBy('title')->toArray();
+
+            foreach ($surveys as $k => $v) {  
+                 $sum = collect($v)->sum('numberOfResponses');
+                 $sumScore = collect($v)->sum('totalScore');
+                 $averageScore = ($sum>0)?($sumScore/$sum):0;
+                 $branchRatings[ collect( $branchRatings )->pluck("text")->search($branch) ]["values"][$k] = round($averageScore,2);
+
+            }
+
+        }
+
+        
+        collect($branchRatings)->each(function($item,$key)use(&$branchRatings){
+
+            $data = collect([]);
+            foreach(collect($item)->get('values') as $v => $i){
+                $data->push([$v,$i]);
+            }
+            $branchRatings[ collect( $branchRatings )->pluck("text")->search( collect($item)->get('text') ) ]["values"] = $data->all();
+        });
+        
         $chart[] = [
             'id' => str_random(6),
             'height' => 600,
@@ -111,7 +157,7 @@ class BranchRepo implements BranchRepoInterface
             'data' => [
                 'type' => 'bar3d',
                 'title' => [
-                    "text"=> "Branches & Total Surveys",
+                    "text"=> "Surveys & Average Scores",
                     "font-size"=> "24px",
                     "adjust-layout"=>true
                 ],
@@ -132,13 +178,62 @@ class BranchRepo implements BranchRepoInterface
               ]
             ],
                 "plot"=>[
-                            "tooltip"=>[ "text"=>"%t<br>%v" ]
+                    "tooltip"=>[ "text"=>"%t<br>%v" ],
+                    "valueBox"=> [
+                        "text"=> "%t ( %v )",
+                        //"placement"=> "top-out",
+                        "font-color"=> "black",
+                        "angle"=> -60,
+                        "offset-y"=> 5,
+                        "padding"=> "15%"
+                    ],
+                    "animation"=> [
+                        "delay"=> "100",
+                        "effect"=> "4",
+                        "method"=> "5",
+                        "sequence"=> "1"
+                    ],
+                    "stacked"=>false,
+                    "stack-type"=>"normal"
                 ],
-                "series" => $branches
+                "series" => $branchRatings
             ]
         ]; 
 
         return $chart;
+    }
+
+    public function getBranchSurveyAverages(array $request, array $branches){
+
+        $ratings = \App\Rating::select('surveys.title', 'branches.name' , 'responses.name as responseName', 'raters.score', DB::raw('COUNT(ratings.response_id) as numberOfResponses'), DB::raw('( COUNT(ratings.response_id)*raters.score) as totalScore') )
+                        ->leftjoin('surveys', 'ratings.survey_id', '=', 'surveys.id')
+                        ->leftjoin('branches', 'ratings.branch_id', '=', 'branches.id')
+                        ->leftjoin('responses', 'ratings.response_id', '=', 'responses.id')
+                        ->leftjoin('raters', 'ratings.response_id', '=', 'raters.response_id')
+                        ->groupBy('surveys.title','branches.name', DB::raw('responseName'), 'raters.score' )
+                        ->get();
+        
+        $grouped = collect($ratings)->groupBy('title');
+
+        $data = $grouped->toArray();
+
+        $result = collect([]);
+
+        foreach($data as $key => $value){
+            $groupBranch = collect($value)->groupBy('name');
+
+            $branches = $groupBranch->toArray();
+            foreach ($branches as $k => $v) {
+                $averageScore = round(( collect($v)->sum('totalScore')/collect($v)->sum('numberOfResponses') ),2);
+                
+                $image = '';
+                $rater = \App\Rater::where('score', (int)round($averageScore,2,PHP_ROUND_HALF_UP))->first();
+                if($rater) $image = \App\Image::find($rater->image_id);
+
+                $result->push(['survey'=>$key,'branch'=>$k,'averageScore'=>$averageScore,'image'=> ($image)?$image->src:'']);
+            }
+        }
+        return $result->all();
     }
 
 }

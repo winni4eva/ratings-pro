@@ -79,7 +79,6 @@ System.register(['@angular/core', '@angular/http', 'rxjs/Observable', 'rxjs/Rx',
                         .catch(this.handleError);
                 };
                 MiscService.prototype.removeResponse = function (responseId) {
-                    console.log("Delete Response " + responseId);
                     return this.http.delete(this._apiResponseUrl + '/' + responseId)
                         .map(this.extractData)
                         .catch(this.handleError);
@@ -87,6 +86,11 @@ System.register(['@angular/core', '@angular/http', 'rxjs/Observable', 'rxjs/Rx',
                 MiscService.prototype.addResponse = function (resp, responseId) {
                     if (responseId === void 0) { responseId = 0; }
                     return this.http.post(this._apiResponseUrl + ("?responseId=" + responseId), JSON.stringify(resp))
+                        .map(this.extractData)
+                        .catch(this.handleError);
+                };
+                MiscService.prototype.removeImage = function (imageId) {
+                    return this.http.delete(this._apiImageUrl + '/' + imageId)
                         .map(this.extractData)
                         .catch(this.handleError);
                 };

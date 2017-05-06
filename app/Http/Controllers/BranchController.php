@@ -5,18 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Domain\Services\Branch\BranchService;
 use App\Domain\Services\User\UserService;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+//use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class BranchController extends Controller
 {
-    use AuthenticatesUsers;
+    //use AuthenticatesUsers;
 
     protected $branchService;
 
     protected $userService;
 
     public function __construct(BranchService $branchService, UserService $userService){
-        $old = ini_set('memory_limit', '8192M'); 
+        //$old = ini_set('memory_limit', '8192M'); 
         $this->branchService = $branchService;
         $this->userService = $userService;
     }
@@ -27,7 +27,7 @@ class BranchController extends Controller
      */
     public function index(Request $request)
     {
-        logger($request);
+        //logger($request);
 
        //$branches = $this->userService->getUserBranches($this->guard()->user()->id);
 

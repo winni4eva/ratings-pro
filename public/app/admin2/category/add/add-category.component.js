@@ -53,7 +53,7 @@ System.register(['@angular/core', '@angular/forms', '../category.service', '../.
                     this._miscService.getImages().subscribe(function (result) { return _this._images = result.images; }, function (error) { return console.log(error); });
                     this.form = new forms_1.FormGroup({
                         name: new forms_1.FormControl('', [forms_1.Validators.required]),
-                        image_id: new forms_1.FormControl('', [forms_1.Validators.required])
+                        image_id: new forms_1.FormControl('')
                     });
                 };
                 AddCategoryComponent.prototype.add = function (model, isValid) {

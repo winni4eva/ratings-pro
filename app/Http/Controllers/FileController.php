@@ -8,6 +8,7 @@ use App\Domain\Services\Report\ReportService;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use PDF;
 use Excel;
+use App\Domain\Services\Zone\ZoneService;
 
 class FileController extends Controller
 {
@@ -17,14 +18,28 @@ class FileController extends Controller
 
     protected $reportService;
 
-    public function __construct(UserService $userService, ReportService $reportService){
+    protected $zoneService;
+
+    public function __construct(UserService $userService, ReportService $reportService, ZoneService $zoneService){
         $this->userService = $userService;
         $this->reportService = $reportService;
+        $this->zoneService = $zoneService;
     }
 
     public function store(Request $request)
     {
         $data = [];
+
+        $allowedBranches = [];
+
+        if($this->guard()->user()->role=='zonal'){
+            $zone = $this->zoneService->findZone( $this->guard()->user()->role_branch_zone_id );
+            $allowedBranches = collect(collect($zone)->get('zone_branches'))->pluck('branch_id')->toArray();
+        }elseif($this->guard()->user()->role=='branch'){
+            $allowedBranches = [ $this->guard()->user()->role_branch_zone_id ];
+        }elseif($this->guard()->user()->role=='admin'){
+            $allowedBranches = \App\Branch::pluck('id')->toArray();
+        }
 
         if($request->get('resource')=='Overview'){
             //$data = $this->userService->getUserSurveys($this->guard()->user()->id);
@@ -45,7 +60,7 @@ class FileController extends Controller
         if($request->get('resource')=='Ratings'){
             //$data = $this->userService->getUserSurveys($this->guard()->user()->id);
     
-            $data = $this->reportService->getRatingsRawDataReport( $request->all() );
+            $data = $this->reportService->getRatingsRawDataReport( $request->all(), $allowedBranches );
             
             //if($request->get('fileType')=='pdf'){
                 if($path = $this->generateReport($request->get('resource'), $data, $request->get('fileType')))
@@ -100,9 +115,14 @@ class FileController extends Controller
                            break;
                        case 'Ratings':
                            $template .= "<td><strong>Survey</strong></td>
-                                            <td><strong>Rater</strong></td>
-                                            <td><strong>Average</strong></td>
-                                            <td><strong>Count</strong></td>
+                                            <td><strong>Branch</strong></td>
+                                            <td><strong>Response</strong></td>
+                                            <td><strong>Score</strong></td>
+                                            <td><strong>Total Responses</strong></td>
+                                            <td><strong>Total Score</strong></td>
+                                            <td><strong>Average Score</strong></td>
+                                            <td><strong>Response Percentage</strong></td>
+                                            <td><strong>Response Percentage Decimal</strong></td>
                                         </tr>";
                            break;
                        default:
@@ -134,10 +154,16 @@ class FileController extends Controller
                                         $template .= "<tr class='{$myClass}'>";
                                         $template .= ($fileType == 'pdf')? "<td>{$num}</td>":'';
                                         $template .= "
-                                                        <td>{$survey->title}</td>
-                                                        <td>{$survey->name}</td>
-                                                        <td>{$survey->average}</td>
-                                                        <td>{$survey->count}</td>
+                                                        <td>{$survey['survey']}</td>
+                                                        <td>{$survey['branch']}</td>
+                                                        <td>{$survey['responseName']}</td>
+                                                        <td>{$survey['score']}</td>
+                                                        <td>{$survey['numberOfResponses']}</td>
+                                                        <td>{$survey['totalScore']}</td>
+                                                        <td>{$survey['averageScore']}</td>
+                                                        <td>{$survey['percentageScore']}</td>
+                                                        <td>{$survey['decimalScore']}</td>
+                                                        
                                                     </tr>";
                                     } 
                                     break;

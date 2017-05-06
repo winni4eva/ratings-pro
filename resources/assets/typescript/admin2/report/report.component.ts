@@ -114,6 +114,29 @@ import { SurveyService } from '../survey/survey.service';
                     <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event,'from')" *ngIf="this._tabOptions[clickedTab]=='raw'" class="pull-right"></my-date-picker>
                 </div>
 
+                <div class="img-thumbnail" style="width:200%" *ngIf="clickedTab=='Branches'">
+
+                    <a class="btn btn-primary pull-left" (click)="changeReportType('raw')">Raw Data</a>
+                    <a class="btn btn-primary pull-left" (click)="changeReportType('chart')">Chart</a>
+
+                    <div class="form-group pull-left" *ngIf="this._tabOptions[clickedTab]=='raw'">
+                        <select class="form-control" [(ngModel)]="selectedBranchId" (change)="filter('branch')">
+                            <option [value]="">--Filter Branch--</option>
+                            <option [value]="branch.id" *ngFor="let branch of _branches">{{branch.name}}</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group pull-left" *ngIf="this._tabOptions[clickedTab]=='raw'">
+                        <select class="form-control" [(ngModel)]="selectedSurveyId" (change)="filter('survey')">
+                            <option [value]="">--Filter Survey--</option>
+                            <option [value]="survey.id" *ngFor="let survey of _surveys">{{survey.title}}</option>
+                        </select>
+                    </div>
+
+                    <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event,'to')" *ngIf="fromDatePickerSet" class="pull-right"></my-date-picker>
+                    <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event,'from')" *ngIf="this._tabOptions[clickedTab]=='raw'" class="pull-right"></my-date-picker>
+                </div>
+
                 <div class="tab-content clearfix img-thumbnail" style="width:200%">
 
                     <div class="tab-pane active" id="1a" *ngIf="clickedTab=='Overview' && _tabOptions[clickedTab]=='chart'">
@@ -133,7 +156,7 @@ import { SurveyService } from '../survey/survey.service';
 
                             <div class="pull-right">
                                 <a (click)="export('pdf')" class="btn btn-default">Export To PDF</a>
-                                <a (click)="export('excel')" class="btn btn-default">Export To Excel</a>
+                                <!--<a (click)="export('excel')" class="btn btn-default">Export To Excel</a>-->
                             </div>
 
                             <div class="form-group pull-right">
@@ -182,12 +205,69 @@ import { SurveyService } from '../survey/survey.service';
                         </div>
                     </div>
 
-                    <div class="tab-pane" id="4a" *ngIf="clickedTab=='Branches'">
+                    <div class="tab-pane active" id="3a" *ngIf="clickedTab=='Branches' && _tabOptions[clickedTab]=='chart'">
                         <zingchart *ngFor="let chart of barcharts" [chart]="chart" ></zingchart>
                     </div>
 
+                    <div class="tab-pane active" id="3a"  *ngIf="clickedTab=='Branches' && _tabOptions[clickedTab]=='raw'">
+                        
+                        <div class="content table-responsive table-full-width">
+                
+                            <pagination-controls (pageChange)="page = $event" id="3"
+                                maxSize="5"
+                                directionLinks="true"
+                                autoHide="true"
+                                class="pull-right"
+                                style="pointer:cursor">
+                            </pagination-controls>
+                            <!--
+                            <div class="pull-right">
+                                <a (click)="export('pdf')" class="btn btn-default">Export To PDF</a>
+                                <a (click)="export('excel')" class="btn btn-default">Export To Excel</a>
+                            </div>
+                            -->
+                            <div class="form-group pull-right">
+                                <select class="form-control" [(ngModel)]="_ratingsItemsPerPage">
+                                    <option [value]="10" [selected]="">--Items Per Page--</option>
+                                    <option [value]="10">10</option>
+                                    <option [value]="20">20</option>
+                                    <option [value]="30">50</option>
+                                    <option [value]="40">100</option>
+                                </select>
+                            </div>
+
+                            <table class="table table-hover table-striped">
+                                <thead>
+                                    <th style="color:black">#</th>
+                                    <th style="color:black">Branch</th>
+                                    <th style="color:black">Survey</th>
+                                    <th style="color:black">Average Score</th>
+                                    <th style="color:black">Icon</th>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let branch of _branchesTable | paginate: {itemsPerPage: _ratingsItemsPerPage, currentPage:page, id: '3'};let i=index">
+                                        <td style="color:black">{{i+1}}</td>
+                                        <td style="color:black">{{branch?.branch}}</td>
+                                        <td style="color:black">{{branch?.survey}}</td>
+                                        <td style="color:black">{{branch?.averageScore}}</td>
+                                        <td style="color:black">
+                                            <img class="img-thumbnail" style="width:50px;height:50px" [src]="branch?.image" alt="Image">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <pagination-controls (pageChange)="page = $event" id="3"
+                                maxSize="5"
+                                directionLinks="true"
+                                autoHide="true"
+                                class="pull-right"
+                                style="pointer:cursor">
+                            </pagination-controls>
+                        </div>
+                    </div>
+
                     <div class="tab-pane active" id="3a" *ngIf="clickedTab=='Ratings' && _tabOptions[clickedTab]=='chart'">
-                        <zingchart *ngFor="let chart of multistackedbarchart" [chart]="chart" ></zingchart>
+                        <zingchart *ngFor="let chart of ratingsbarcharts" [chart]="chart" ></zingchart>
                     </div>
 
                     <div class="tab-pane active" id="3a"  *ngIf="clickedTab=='Ratings' && _tabOptions[clickedTab]=='raw'">
@@ -204,7 +284,7 @@ import { SurveyService } from '../survey/survey.service';
 
                             <div class="pull-right">
                                 <a (click)="export('pdf')" class="btn btn-default">Export To PDF</a>
-                                <a (click)="export('excel')" class="btn btn-default">Export To Excel</a>
+                                <!--<a (click)="export('excel')" class="btn btn-default">Export To Excel</a>-->
                             </div>
 
                             <div class="form-group pull-right">
@@ -221,19 +301,25 @@ import { SurveyService } from '../survey/survey.service';
                                 <thead>
                                     <th style="color:black">#</th>
                                     <th style="color:black">Survey</th>
+                                    <th style="color:black">Branch</th>
                                     <th style="color:black">Rater</th>
                                     <th style="color:black">Score</th>
-                                    <th style="color:black">Count</th>
-                                    <th style="color:black">Average</th>
+                                    <th style="color:black">Responses</th>
+                                    <th style="color:black">Average Score</th>
+                                    <th style="color:black">Response Rate (%)</th>
+                                    <th style="color:black">Response Rate (d)</th>
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let rating of _ratingsTable | paginate: {itemsPerPage: _ratingsItemsPerPage, currentPage:page, id: '2'};let i=index">
                                         <td style="color:black">{{i+1}}</td>
-                                        <td style="color:black">{{rating?.title}}</td>
-                                        <td style="color:black">{{rating?.name}}</td>
+                                        <td style="color:black">{{rating?.survey}}</td>
+                                        <td style="color:black">{{rating?.branch}}</td>
+                                        <td style="color:black">{{rating?.responseName}}</td>
                                         <td style="color:black">{{rating?.score}}</td>
-                                        <td style="color:black">{{rating?.count}}</td>
-                                        <td style="color:black">{{rating?.average}}</td>
+                                        <td style="color:black">{{rating?.numberOfResponses}}</td>
+                                        <td style="color:black">{{rating?.averageScore}}</td>
+                                        <td style="color:black">{{rating?.percentageScore}}</td>
+                                        <td style="color:black">{{rating?.decimalScore}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -316,7 +402,11 @@ import { SurveyService } from '../survey/survey.service';
 
      public overViewtable: Array<any> = [];
 
+     public ratingsbarcharts: Array<any> = [];
+
      private _ratingsTable: Array<any> = [];
+
+     private _branchesTable: Array<any> = [];
 
      public data;
 
@@ -336,103 +426,6 @@ import { SurveyService } from '../survey/survey.service';
                     private _fileService: FileService,
                     private _branchService: BranchService,
                     private _surveyService: SurveyService) {
-
-        // this.charts = [
-        //   {
-        //     id: 'chart-1',
-        //     data: {
-        //       title: {
-        //         "text": "Surveys & Responses",
-        //         "font-size": "24px",
-        //         "adjust-layout":true
-        //       },
-        //       plotarea: {
-        //         "margin": "dynamic 45 60 dynamic",
-        //       },
-        //       legend: {
-        //         "layout": "float",
-        //         "background-color": "none",
-        //         "border-width": 0,
-        //         "shadow": 0,
-        //         "align":"center",
-        //         "adjust-layout":true,
-        //         "item":{
-        //         "padding": 7,
-        //         "marginRight": 17,
-        //         "cursor":"hand"
-        //         }
-        //       },
-        //       "type": "line", 
-        //       "series": [ 
-        //         {"values":[20,40,25,50,15,45,33,34]}, 
-        //         {"values":[5,30,21,18,59,50,28,33]}, 
-        //         {"values":[30,5,18,21,33,41,29,15]} 
-        //       ] 
-        //     },
-        //     height: 600,
-        //     width: '100%',
-        //     "scale-x":{
-        //       "values":"0:35:7",
-        //       "format":"Day %v"
-        //     },
-        //     "scale-y":{
-        //       "values":"0:100:20",
-        //       "format":"%v%",
-        //       "guide":{
-        //         "line-style":"dashdot"
-        //       }
-        //     }
-        //   }
-        // ];
-
-        // this.stackedbarcharts = [
-        //   {
-        //     id: 'chart-4',
-        //     data: {
-        //       "type": "bar3d",
-        //       "plot":{
-        //         "stacked":true,
-        //         "stack-type":"normal" /* Optional specification */
-        //       }, 
-        //       "series": [ 
-        //         {"values":[20,40,25,50,15,45,33,34]}, 
-        //         {"values":[5,30,21,18,59,50,28,33]}, 
-        //         {"values":[30,5,18,21,33,41,29,15]} 
-        //       ]
-        //     },
-        //     height: 600,
-        //     width: '100%'
-        //     }
-        // ];
-
-        this.multistackedbarchart = [
-          {
-            id: 'chart-6',
-            data: {
-              "type": "bar3d",
-              "plot":{
-                "aspect":"bar"
-              },
-              "series": [
-                    {
-                        "text": "Qaulity Service Survey", 
-                        "values":[20,40,25,50,15,45,33,34,32]
-                    },
-                    {
-                        "text": "Money Transfer Survey", 
-                        "values":[5,30,21,18,59,50,28,33,12]
-                    },
-                    {
-                        "text": "Saturday Banking Survey", 
-                        "values":[30,5,18,21,33,41,29,15,32]
-                    }
-                ]
-            },
-            height: 600,
-            width: '100%'
-            }
-        ];
-
       }
 
       ngOnInit(){
@@ -486,14 +479,6 @@ import { SurveyService } from '../survey/survey.service';
           }
       }
 
-      //public toInt(num: string) {
-            //return +num;
-      //}
-
-      //public sortByWordLength = (a: any) => {
-            //return a.city.length;
-      //}
-
       getReport(filter){
         
         this._reportService.getReport(filter).subscribe(
@@ -505,9 +490,11 @@ import { SurveyService } from '../survey/survey.service';
                         break;
                     case 'Branches':
                         this.barcharts = result.report;
+                        this._branchesTable = result.raw;
                         break;
                     case 'Ratings':
                         this._ratingsTable = result.raw;
+                        this.ratingsbarcharts = result.report;
                         break;
                     default:
                         break;

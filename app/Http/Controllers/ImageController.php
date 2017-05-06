@@ -75,6 +75,8 @@ class ImageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if($this->imageService->removeImage( $id ) )
+            return response()->json(['success'=>'Image removed successfully..'], 200);
+        return response()->json(['error'=>'Error deleting image..'], 403);
     }
 }

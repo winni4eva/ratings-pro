@@ -25,6 +25,17 @@ class ZoneService
     }
 
     /**
+     * Add Zone
+     *
+     * @param array $request
+     * @return mixed
+     */
+    public function addZone(array $request)
+    {
+        return $this->zoneRepo->add( $request );
+    }
+
+    /**
      * Get Zones
      *
      * @param array $request
@@ -36,7 +47,7 @@ class ZoneService
     }
 
     /**
-     * Remove Response
+     * Remove Zone
      *
      * @param int $id
      * @return mixed
@@ -52,9 +63,20 @@ class ZoneService
      * @param int $id
      * @return mixed
      */
-    public function findZone(int $id)
+    public function findZone($id)
     {
         return $this->zoneRepo->find( $id );
+    }
+
+    /**
+     * Remove Zone Branch
+     *
+     * @param int $id
+     * @return mixed
+     */
+    public function removeZoneBranch($branchId, $zoneId)
+    {
+        return $this->zoneRepo->removeZoneBranch($branchId, $zoneId);
     }
 
 }

@@ -25,7 +25,7 @@ interface ZoneRepoInterface
      * @param int $id
      * @return mixed
      */
-    public function find(int $id);
+    public function find($id);
 
     /**
      * Remove zone

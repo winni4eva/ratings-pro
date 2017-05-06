@@ -21,12 +21,22 @@ class UserRepo implements UserRepoInterface
     public function save(array $request)
     {
 
-        $role_branch_zone_id = ($request['role']=='branch')
-                                ? $request['branch_id']
-                                : ($request['role']=='zonal')
-                                ? $request['zone_id']
-                                : 0;
-        
+        // $role_branch_zone_id = ($request['role']=='branch')
+        //                         ? $request['branch_id']
+        //                         : ($request['role']=='zonal')
+        //                         ? $request['zone_id']
+        //                         : 0;
+
+        if($request['role']=='branch'){
+            $role_branch_zone_id = $request['branch_id'];
+        }elseif($request['role']=='zonal'){
+            $role_branch_zone_id = $request['zone_id'];
+        }else{
+            $role_branch_zone_id = 0;
+        }                         
+
+        //logger("Zone Id =>". $role_branch_zone_id);
+
         $user = $this->model->updateOrCreate(['id'=> collect($request)->get('id')],[
             'email' => $request['email'],
             'first_name' => $request['first_name'],

@@ -48,4 +48,12 @@ class ReportService
         return $this->ratingRepo->getRatingrawDataReport( $request, $branches );
     }
 
+    public function getBranchSurveyAverages(array $request, array $branches){
+        return $this->branchRepo->getBranchSurveyAverages( $request, $branches );
+    }
+
+    public function getRatings(array $request, array $branches){
+        return $this->ratingRepo->getRatingsReport($request, $branches);
+    }
+
 }

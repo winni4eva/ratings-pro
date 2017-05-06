@@ -5,18 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Domain\Services\Survey\SurveyService;
 use App\Domain\Services\User\UserService;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+//use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class SurveyController extends Controller
 {
-    use AuthenticatesUsers;
+    //use AuthenticatesUsers;
 
     protected $surveyService;
 
     protected $userService;
 
     public function __construct(SurveyService $surveyService, UserService $userService){
-        $old = ini_set('memory_limit', '8192M'); 
+        //$old = ini_set('memory_limit', '8192M'); 
         $this->surveyService = $surveyService;
         $this->userService = $userService;
     }
@@ -30,9 +30,8 @@ class SurveyController extends Controller
         //$surveys = $this->userService->getUserSurveys($this->guard()->user()->id);
 
         //$branchSurveys = collect( collect($surveys)->get(0) )->get('branches');
-        logger('Made It');
+
         $surveys = $this->surveyService->getSurveys();
-        logger('Here');
     
         return response()->json(compact('surveys'),200);
     }

@@ -83,4 +83,22 @@ class ZoneController extends Controller
     {
         //
     }
+
+    public function addZoneBranch(Request $request)
+    {
+        logger($request);
+        if( $this->zoneService->addZone( $request->all() ) )
+            return response()->json(['success'=>'Zone added successfully...'],200);
+
+        return response()->json(['error'=>'Error adding zone...'],403);
+    }
+
+    public function deleteZoneBranch($branchId, $zoneId)
+    {
+        logger($branchId. ' ' .$zoneId);
+        if( $this->zoneService->removeZoneBranch( $branchId, $zoneId ) )
+            return response()->json(['success'=>'Zone branch removed successfully...'],200);
+
+        return response()->json(['error'=>'Error removing zone branch...'],403);
+    }
 }

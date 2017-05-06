@@ -20,4 +20,12 @@ class Zone extends Model
         return $this->hasMany(BranchZone::class);
     }
 
+    public function branchCountRelation() {
+
+        // return $this->zoneBranches()
+        //             ->selectRaw('branch_id, count(*) as count')
+        //             ->groupBy('branch_id');
+
+    }
+
 }

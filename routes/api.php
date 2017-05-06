@@ -38,4 +38,6 @@ Route::group(['prefix' => 'v1','middleware' => 'auth:api'], function () {
     Route::resource('users','UserController');
     Route::resource('zones','ZoneController');
     Route::get('branch_surveys/survey/{surveyId}/branch/{branchId}','BranchSurveyController@destroy');
+    Route::post('zones/zone_branches','ZoneController@addZoneBranch');
+    Route::get('zones/branch_id/{branchId}/zone_id/{zoneId}/zone_branches','ZoneController@deleteZoneBranch');
 });

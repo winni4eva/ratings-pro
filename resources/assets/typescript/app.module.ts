@@ -32,6 +32,8 @@ import { ViewUserComponent } from './admin2/user/view/view-user.component';
 import { ReportComponent } from './admin2/report/report.component';
 import { BranchSurveyComponent } from './admin2/branch/branchSurveys/branch-surveys.component';
 import { AddZoneComponent } from './admin2/zones/add/add-zone.component';
+import { ViewZonesComponent } from './admin2/zones/view/view-zones.component';
+import { ZoneBranchesComponent } from './admin2/zones/zoneBranches/zone-branches.component';
 import { ZingChart } from './admin2/chart/zingchart.component';
 import { Modal } from './shared/modal/modal.component';
 // import { ContentHeaderComponent } from './admin/content/header/content-header.component';
@@ -85,7 +87,7 @@ import {Ng2PaginationModule} from 'ng2-pagination'; //importing ng2-pagination
                     AddBranchComponent, ViewCategoryComponent, AddCategoryComponent, ViewSurveyComponent,
                     AddSurveyComponent, ViewImageComponent, AddImageComponent, ViewResponseComponent, AddResponseComponent,
                     ReportComponent, ZingChart, Modal, BranchSurveyComponent, AddUserComponent, ViewUserComponent,
-                    AddZoneComponent
+                    AddZoneComponent, ViewZonesComponent, ZoneBranchesComponent
                    // HeaderComponent, SideBarComponent, ContentHeaderComponent, BoxesComponent,
                    // TabsComponent, AddUserComponent, ViewUserComponent, AddSurverComponent,
                    // ViewSurveyComponent, AddBranchComponent, ViewBranchComponent, MiscComponent, AddCategoryComponent 

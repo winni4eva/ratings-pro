@@ -46,7 +46,7 @@ elixir(mix => {
             'main.ts',
             '*'
         ],
-        'public\\app',
+        'public/app',
         {
             "target": "es5",
             "module": "system",

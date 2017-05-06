@@ -72,7 +72,6 @@ export class MiscService {
   }
 
   removeResponse(responseId): Observable<any>{
-      console.log(`Delete Response ${responseId}`);
       return this.http.delete( this._apiResponseUrl +'/'+ responseId )
                       .map(this.extractData)
                       .catch(this.handleError);
@@ -82,6 +81,13 @@ export class MiscService {
   addResponse(resp, responseId = 0): Observable<any>{
       
       return this.http.post( this._apiResponseUrl + `?responseId=${responseId}`, JSON.stringify( resp ) )
+                      .map(this.extractData)
+                      .catch(this.handleError);
+      
+  }
+
+  removeImage(imageId): Observable<any>{
+      return this.http.delete( this._apiImageUrl +'/'+ imageId )
                       .map(this.extractData)
                       .catch(this.handleError);
       

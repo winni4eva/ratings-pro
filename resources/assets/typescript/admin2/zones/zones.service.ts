@@ -27,6 +27,19 @@ export class ZoneService {
                       .catch(this.handleError);
   }
 
+  addZoneBranch(branchId, zoneId): Observable<any>{
+      return this.http.post( this._apiZonesUrl + `/zone_branches`, JSON.stringify( {branch_id: branchId, zone_id: zoneId} ) )
+                      .map(this.extractData)
+                      .catch(this.handleError);
+  }
+
+  removeZoneBranch(branchId, zoneId): Observable<any>{
+      return this.http.get( this._apiZonesUrl + `/branch_id/${branchId}/zone_id/${zoneId}/zone_branches` )
+                      .map(this.extractData)
+                      .catch(this.handleError);
+      
+  }
+
   private extractData(res: Response) {
       return res.json() || { };
   }

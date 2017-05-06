@@ -32,6 +32,21 @@ class ZoneRepo implements ZoneRepoInterface
     }
 
     /**
+     * add zone
+     *
+     * @param array $request
+     * @return mixed
+     */
+    public function add(array $request)
+    {
+        
+        $zone = $this->model->find( $request['zone_id'] );
+
+        return $zone->zoneBranches()->firstOrCreate( $request );
+        
+    }
+
+    /**
      * get zone
      *
      * @param array $request
@@ -39,7 +54,7 @@ class ZoneRepo implements ZoneRepoInterface
      */
     public function get(array $request)
     {
-        return $this->model->get();
+        return $this->model->with('zoneBranches.branch')->get();
     }
 
     /**
@@ -48,7 +63,7 @@ class ZoneRepo implements ZoneRepoInterface
      * @param int $id
      * @return mixed
      */
-    public function find(int $id){
+    public function find($id){
         return $this->model->with('zoneBranches')->find( $id );
     }
 
@@ -60,6 +75,18 @@ class ZoneRepo implements ZoneRepoInterface
      */
     public function remove(int $id){
         return $this->model->destroy($id);
+    }
+
+    /**
+     * remove zone branch
+     *
+     * @param array $request
+     * @return mixed
+     */
+    public function removeZoneBranch(int $branchId, int $zoneId){
+        $zone = $this->model->find( $zoneId );
+
+        return $zone->zoneBranches()->where('branch_id', $branchId)->delete();
     }
 
 }

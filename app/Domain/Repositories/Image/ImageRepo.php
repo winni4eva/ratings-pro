@@ -35,4 +35,14 @@ class ImageRepo implements ImageRepoInterface
         return $this->model->all();
     }
 
+    /**
+     * remove image
+     *
+     * @return mixed
+     */
+    public function remove($id)
+    {
+        return $this->model->destroy($id);
+    }
+
 }
