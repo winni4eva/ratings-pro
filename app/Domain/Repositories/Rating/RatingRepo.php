@@ -108,17 +108,32 @@ class RatingRepo implements RatingRepoInterface
 
     public function getRatingrawDataReport(array $request, array $branches){
 
-        $branchRatings = \App\Branch::with(['ratings'=>function($q){
-            $q->with(
-                'survey',
-                'previousResponse',
-                'question',
-                'branch',
-                'response.rater.image'
-            );
-        }])->whereIn('id', $branches)->get();
+        $ratings = $this->model->select('surveys.title', 'branches.name' , 'responses.name as responseName', 'raters.score', 'images.src','ratings.created_at','questions.question' )
+                        ->leftjoin('surveys', 'ratings.survey_id', '=', 'surveys.id')
+                        ->leftjoin('branches', 'ratings.branch_id', '=', 'branches.id')
+                        ->leftjoin('responses', 'ratings.response_id', '=', 'responses.id')
+                        ->leftjoin('questions', 'ratings.question_id', '=', 'questions.id')
+                        ->leftjoin('raters', 'ratings.response_id', '=', 'raters.response_id')
+                        ->leftjoin('images', 'raters.image_id', '=', 'images.id')
+                        //->leftJoin(DB::raw('(SELECT SUM(score) AS sum, COUNT(*) as total FROM raters) as r'),'ratings.response_id', '=', 'raters.response_id')
+                        //->leftJoin(DB::raw('(SELECT COUNT(*) as totalResponses FROM rat) as r'),'ratings.response_id', '=', 'raters.response_id')
+                        ->whereIn('ratings.branch_id', $branches)
+                        //->groupBy('surveys.title','branches.name','raters.score','r.sum','r.total')
+                        //->groupBy('surveys.title','branches.name', DB::raw('responseName'), 'raters.score' )
+                        //->orderBy('raters.score','desc')
+                        ->get();
 
-        $ratings = collect(collect($branchRatings->pluck('ratings'))->get(0));
+        // $branchRatings = \App\Branch::with(['ratings'=>function($q){
+        //     $q->with(
+        //         'survey',
+        //         'previousResponse',
+        //         'question',
+        //         'branch',
+        //         'response.rater.image'
+        //     );
+        // }])->whereIn('id', $branches)->get();
+
+        // $ratings = collect(collect($branchRatings->pluck('ratings'))->get(0));
           
         // $ratings = $this->model->with(
         //             [

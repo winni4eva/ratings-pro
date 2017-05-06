@@ -174,7 +174,7 @@ import { SurveyService } from '../survey/survey.service';
                                     <th style="color:black">#</th>
                                     <th style="color:black">Questionaire</th>
                                     <th style="color:black">Branch</th>
-                                    <th style="color:black">Previous Answer</th>
+                                    <th style="color:black">Question</th>
                                     <th style="color:black">Answer</th>
                                     <th style="color:black">Score</th>
                                     <th style="color:black">Icon</th>
@@ -183,13 +183,13 @@ import { SurveyService } from '../survey/survey.service';
                                 <tbody>
                                     <tr *ngFor="let data of overViewtable | paginate: {itemsPerPage: _overviewItemsPerpage, currentPage:page, id: '1'};let i=index">
                                         <td style="color:black">{{i+1}}</td>
-                                        <td style="color:black">{{data?.survey?.title}}</td>
-                                        <td style="color:black">{{data?.branch?.name}}</td>
-                                        <td style="color:black">{{data?.previous_response?.name}}</td>
-                                        <td style="color:black">{{data?.response?.name}}</td>
-                                        <td style="color:black">{{data?.response?.rater?.score}}</td>
+                                        <td style="color:black">{{data?.title}}</td>
+                                        <td style="color:black">{{data?.name}}</td>
+                                        <td style="color:black">{{data?.question}}</td>
+                                        <td style="color:black">{{data?.responseName}}</td>
+                                        <td style="color:black">{{data?.score}}</td>
                                         <td style="color:black">
-                                            <img class="img-thumbnail" style="width:50px;height:50px" [src]="data?.response?.rater?.image?.src" alt="Image">
+                                            <img class="img-thumbnail" style="width:50px;height:50px" [src]="data?.src" alt="Image">
                                         </td>
                                         <td style="color:black">{{data?.created_at}}</td>
                                     </tr>
