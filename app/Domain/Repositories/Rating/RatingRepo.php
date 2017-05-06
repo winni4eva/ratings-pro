@@ -35,7 +35,7 @@ class RatingRepo implements RatingRepoInterface
                         ->leftjoin('raters', 'ratings.response_id', '=', 'raters.response_id')
                         //->leftJoin(DB::raw('(SELECT SUM(score) AS sum, COUNT(*) as total FROM raters) as r'),'ratings.response_id', '=', 'raters.response_id')
                         //->leftJoin(DB::raw('(SELECT COUNT(*) as totalResponses FROM rat) as r'),'ratings.response_id', '=', 'raters.response_id')
-                        //->whereIn('ratings.branch_id', $branches)
+                        ->whereIn('ratings.branch_id', $branches)
                         //->groupBy('surveys.title','branches.name','raters.score','r.sum','r.total')
                         ->groupBy('surveys.title','branches.name', DB::raw('responseName'), 'raters.score' )
                         ->orderBy('raters.score','desc');
@@ -149,7 +149,7 @@ class RatingRepo implements RatingRepoInterface
     }
 
     public function getRatingsReport($request, $branches){
-
+        
         $ratings = $this->model->select('surveys.title', 'branches.name' , 'responses.name as responseName', 'raters.score', DB::raw('COUNT(ratings.response_id) as numberOfResponses'), DB::raw('( COUNT(ratings.response_id)*raters.score) as totalScore') )
                         ->leftjoin('surveys', 'ratings.survey_id', '=', 'surveys.id')
                         ->leftjoin('branches', 'ratings.branch_id', '=', 'branches.id')
@@ -157,7 +157,7 @@ class RatingRepo implements RatingRepoInterface
                         ->leftjoin('raters', 'ratings.response_id', '=', 'raters.response_id')
                         //->leftJoin(DB::raw('(SELECT SUM(score) AS sum, COUNT(*) as total FROM raters) as r'),'ratings.response_id', '=', 'raters.response_id')
                         //->leftJoin(DB::raw('(SELECT COUNT(*) as totalResponses FROM rat) as r'),'ratings.response_id', '=', 'raters.response_id')
-                        //->whereIn('ratings.branch_id', $branches)
+                        //->whereIn('branches.id', $branches)
                         //->groupBy('surveys.title','branches.name','raters.score','r.sum','r.total')
                         ->groupBy('surveys.title','branches.name', DB::raw('responseName'), 'raters.score' )
                         ->get();
@@ -168,7 +168,7 @@ class RatingRepo implements RatingRepoInterface
 
         $data = $grouped->toArray();
         $allSurveys = \App\Survey::pluck('id','title')->all();
-        $allBranches = \App\Branch::pluck('name')->all();
+        $allBranches = \App\Branch::whereIn('branches.id', $branches)->pluck('name')->all();
 
         $allSurveys = collect($allSurveys)->transform(function ($item, $key) {
             return 0;
@@ -180,9 +180,7 @@ class RatingRepo implements RatingRepoInterface
         }
 
         
-        foreach($data as $branch => $surveys){  
-            if( !(collect($branchRatings)->pluck("text")->search($branch) > -1) )
-                $branchRatings[] = ["text" => $branch, "values" => $allSurveys->all() ];
+        foreach($data as $branch => $surveys){ 
             
             $surveys = collect($surveys)->groupBy('title')->toArray();
 

@@ -112,7 +112,7 @@ class BranchRepo implements BranchRepoInterface
 
         $data = $grouped->toArray();
         $allSurveys = \App\Survey::pluck('id','title')->all();
-        $allBranches = \App\Branch::pluck('name')->all();
+        $allBranches = \App\Branch::whereIn('branches.id', $branches)->pluck('name')->all();
 
         $allSurveys = collect($allSurveys)->transform(function ($item, $key) {
             return 0;
@@ -125,8 +125,8 @@ class BranchRepo implements BranchRepoInterface
 
         
         foreach($data as $branch => $surveys){  
-            if( !(collect($branchRatings)->pluck("text")->search($branch) > -1) )
-                $branchRatings[] = ["text" => $branch, "values" => $allSurveys->all() ];
+            // if( !(collect($branchRatings)->pluck("text")->search($branch) > -1) )
+            //     $branchRatings[] = ["text" => $branch, "values" => $allSurveys->all() ];
             
             $surveys = collect($surveys)->groupBy('title')->toArray();
 
@@ -210,6 +210,7 @@ class BranchRepo implements BranchRepoInterface
                         ->leftjoin('branches', 'ratings.branch_id', '=', 'branches.id')
                         ->leftjoin('responses', 'ratings.response_id', '=', 'responses.id')
                         ->leftjoin('raters', 'ratings.response_id', '=', 'raters.response_id')
+                        ->whereIn('branches.id', $branches)
                         ->groupBy('surveys.title','branches.name', DB::raw('responseName'), 'raters.score' )
                         ->get();
         
