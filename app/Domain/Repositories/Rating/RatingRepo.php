@@ -37,7 +37,8 @@ class RatingRepo implements RatingRepoInterface
                         //->leftJoin(DB::raw('(SELECT COUNT(*) as totalResponses FROM rat) as r'),'ratings.response_id', '=', 'raters.response_id')
                         //->whereIn('ratings.branch_id', $branches)
                         //->groupBy('surveys.title','branches.name','raters.score','r.sum','r.total')
-                        ->groupBy('surveys.title','branches.name', DB::raw('responseName'), 'raters.score' );
+                        ->groupBy('surveys.title','branches.name', DB::raw('responseName'), 'raters.score' )
+                        ->orderBy('raters.score','desc');
                         //->get();
 
         if(collect($request)->get('branchId')){

@@ -41,8 +41,7 @@ System.register(['@angular/core', '../zones.service', 'angular2-notifications', 
                     this._actionValue = [];
                 }
                 ViewZonesComponent.prototype.ngOnInit = function () {
-                    var _this = this;
-                    this._zoneService.getZones().subscribe(function (result) { return _this._zones = result.zones; }, function (error) { return console.log(error); });
+                    this.getZones();
                 };
                 ViewZonesComponent.prototype.ngOnDestroy = function () {
                     //
@@ -55,26 +54,29 @@ System.register(['@angular/core', '../zones.service', 'angular2-notifications', 
                     }
                     else if (this._actionValue[index] == 'delete') {
                         var confirmed = confirm("Are you sure you want to remove the selected zone");
+                        if (confirmed)
+                            this.remove(zoneId);
                     }
+                };
+                ViewZonesComponent.prototype.getZones = function () {
+                    var _this = this;
+                    this._zoneService.getZones().subscribe(function (result) { return _this._zones = result.zones; }, function (error) { return console.log(error); });
                 };
                 ViewZonesComponent.prototype.addBranches = function (zoneId) {
                     this._router.navigate([("/admin/zone-branches/" + zoneId)]);
                 };
-                ViewZonesComponent.prototype.remove = function (userId) {
-                    // this._miscService.removeResponse(responseId)
-                    //         .subscribe( 
-                    //                         result => 
-                    //                             this._notification.success('Success', 'Response removed successfully...')
-                    //                             //this._responses = result.responses
-                    //                         ,
-                    //                         error => this._notification.error('Error', error),
-                    //                         () => this.getResponses()
-                    //                     );
+                ViewZonesComponent.prototype.remove = function (zoneId) {
+                    var _this = this;
+                    this._zoneService.remove(zoneId)
+                        .subscribe(function (result) {
+                        _this._notification.success('Success', result.success);
+                        _this.getZones();
+                    }, function (error) { return _this._notification.error('Error', error); });
                 };
                 ViewZonesComponent = __decorate([
                     core_1.Component({
                         selector: 'my-view-survey',
-                        template: "\n        <simple-notifications [options]=\"_options\"></simple-notifications>\n\n        <my-content title=\"Zones\">\n\n            <div class=\"content table-responsive table-full-width\">\n                <table class=\"table table-hover table-striped\">\n                    <thead>\n                        <th>Zone</th>\n                        <th>Number Of Branches</th>\n                        <th>Action</th>\n                    </thead>\n                    <tbody>\n                        <tr *ngFor=\"let zone of _zones; let i = index\">\n                            <td>{{zone?.name}}</td>\n                            <td>{{zone?.zone_branches?.length}}</td>\n                            <td><a class=\"btn btn-default\" style=\"pointer:cursor\" (click)=\"addBranches(zone?.id)\">branches</a></td>\n                            <td></td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"_actionValue[i]\" (change)=\"action(i, zone?.id)\">\n                                    <option value=\"\">--Select Action--</option>\n                                    <option [value]=\"'edit'\">Edit</option>\n                                    <option [value]=\"'delete'\">Delete</option>\n                                </select>\n                            </td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </my-content>\n    "
+                        template: "\n        <simple-notifications [options]=\"_options\"></simple-notifications>\n\n        <my-content title=\"Zones\">\n\n            <div class=\"content table-responsive table-full-width\">\n                <table class=\"table table-hover table-striped\">\n                    <thead>\n                        <th>Zone</th>\n                        <th>Number Of Branches</th>\n                        <th>Action</th>\n                    </thead>\n                    <tbody>\n                        <tr *ngFor=\"let zone of _zones; let i = index\">\n                            <td>{{zone?.name}}</td>\n                            <td>{{zone?.zone_branches?.length}}</td>\n                            <td><a class=\"btn btn-default\" style=\"pointer:cursor\" (click)=\"addBranches(zone?.id)\">branches</a></td>\n                            <td></td>\n                            <td>\n                                <select class=\"form-control\" [(ngModel)]=\"_actionValue[i]\" (change)=\"action(i, zone?.id)\">\n                                    <option value=\"\">--Select Action--</option>\n                                    <!--<option [value]=\"'edit'\">Edit</option>-->\n                                    <option [value]=\"'delete'\">Delete</option>\n                                </select>\n                            </td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </my-content>\n    "
                     }), 
                     __metadata('design:paramtypes', [zones_service_1.ZoneService, angular2_notifications_1.NotificationsService, router_1.Router])
                 ], ViewZonesComponent);

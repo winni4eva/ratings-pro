@@ -81,12 +81,14 @@ class ZoneController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if( $this->zoneService->removeZone( $id ) )
+            return response()->json(['success'=>'Zone removed successfully...'],200);
+
+        return response()->json(['error'=>'Error removing zone...'],403);
     }
 
     public function addZoneBranch(Request $request)
     {
-        logger($request);
         if( $this->zoneService->addZone( $request->all() ) )
             return response()->json(['success'=>'Zone added successfully...'],200);
 
@@ -95,7 +97,6 @@ class ZoneController extends Controller
 
     public function deleteZoneBranch($branchId, $zoneId)
     {
-        logger($branchId. ' ' .$zoneId);
         if( $this->zoneService->removeZoneBranch( $branchId, $zoneId ) )
             return response()->json(['success'=>'Zone branch removed successfully...'],200);
 

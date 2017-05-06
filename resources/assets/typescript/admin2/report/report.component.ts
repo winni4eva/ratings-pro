@@ -303,8 +303,8 @@ import { SurveyService } from '../survey/survey.service';
                                     <th style="color:black">Survey</th>
                                     <th style="color:black">Branch</th>
                                     <th style="color:black">Rater</th>
-                                    <th style="color:black">Score</th>
-                                    <th style="color:black">Responses</th>
+                                    <th style="color:black">Rater Score</th>
+                                    <th style="color:black">Total Votes</th>
                                     <th style="color:black">Average Score</th>
                                     <th style="color:black">Response Rate (%)</th>
                                     <th style="color:black">Response Rate (d)</th>
