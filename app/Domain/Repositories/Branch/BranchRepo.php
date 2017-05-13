@@ -210,9 +210,27 @@ class BranchRepo implements BranchRepoInterface
                         ->leftjoin('branches', 'ratings.branch_id', '=', 'branches.id')
                         ->leftjoin('responses', 'ratings.response_id', '=', 'responses.id')
                         ->leftjoin('raters', 'ratings.response_id', '=', 'raters.response_id')
-                        ->whereIn('branches.id', $branches)
-                        ->groupBy('surveys.title','branches.name', DB::raw('responseName'), 'raters.score' )
-                        ->get();
+                        ->whereIn('branches.id', $branches);
+                        //->get();
+
+        if(collect($request)->get('branchId')){
+            $ratings = $ratings->where('ratings.branch_id', collect($request)->get('branchId'));
+        }elseif(collect($request)->get('surveyId')){
+            $ratings = $ratings->where('ratings.survey_id', collect($request)->get('surveyId'));
+        }
+
+        if(collect($request)->get('from') && collect($request)->get('to')){
+            $ratings = $ratings->whereBetween(
+                                'ratings.created_at', 
+                                [
+                                    $this->getDateTimeDate( $request['from'])->format('Y-m-d H:i:s'), 
+                                    $this->getDateTimeDate( $request['to'])->format('Y-m-d H:i:s')
+                                ]
+                            );
+        }
+
+        $ratings = $ratings->groupBy('surveys.title','branches.name', DB::raw('responseName'), 'raters.score' )
+                            ->get();
         
         $grouped = collect($ratings)->groupBy('title');
 
@@ -234,7 +252,12 @@ class BranchRepo implements BranchRepoInterface
                 $result->push(['survey'=>$key,'branch'=>$k,'averageScore'=>$averageScore,'image'=> ($image)?$image->src:'']);
             }
         }
+
         return $result->all();
+    }
+
+    protected function getDateTimeDate($period, $format = 'Y-m-d H:i:s'){
+        return new \DateTime( date( $format, strtotime( $period ) ) );
     }
 
 }
