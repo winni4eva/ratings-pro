@@ -55,11 +55,11 @@ import { SurveyService } from '../survey/survey.service';
                     </li>
 
                     <li>
-                        <a href="#3a" data-toggle="tab" (click)="clickedTab='Ratings';updateReport()">Ratings</a>
+                        <a href="#4a" data-toggle="tab" (click)="clickedTab='Branches';updateReport()">Branches</a>
                     </li>
 
                     <li>
-                        <a href="#4a" data-toggle="tab" (click)="clickedTab='Branches';updateReport()">Branches</a>
+                        <a href="#3a" data-toggle="tab" (click)="clickedTab='Ratings';updateReport()">Ratings</a>
                     </li>
                     
                     <!--
@@ -73,19 +73,30 @@ import { SurveyService } from '../survey/survey.service';
                     <a class="btn btn-primary pull-left" (click)="changeReportType('raw')">Raw Data</a>
                     <a class="btn btn-primary pull-left" (click)="changeReportType('chart')">Chart</a>
 
-                    <div class="form-group pull-left" *ngIf="this._tabOptions[clickedTab]=='raw'">
+                    <!--<div class="form-group pull-left" *ngIf="_tabOptions[clickedTab]=='raw'">-->
+                    <div class="form-group pull-left">
                         <select class="form-control" [(ngModel)]="selectedBranchId" (change)="filter('branch')">
-                            <option [value]="">--Filter Branch--</option>
+                            <option [value]="''">--Filter Branch--</option>
                             <option [value]="branch.id" *ngFor="let branch of _branches">{{branch.name}}</option>
                         </select>
                     </div>
 
-                    <div class="form-group pull-left" *ngIf="this._tabOptions[clickedTab]=='raw'">
+                    <!--<div class="form-group pull-left" *ngIf="_tabOptions[clickedTab]=='raw'">-->
+                    <div class="form-group pull-left">
                         <select class="form-control" [(ngModel)]="selectedSurveyId" (change)="filter('survey')">
-                            <option [value]="">--Filter Survey--</option>
+                            <option [value]="''">--Filter Survey--</option>
                             <option [value]="survey.id" *ngFor="let survey of _surveys">{{survey.title}}</option>
                         </select>
                     </div>
+
+                    <div class="form-group pull-left" *ngIf="_tabOptions[clickedTab]=='chart'">
+                        <select class="form-control" [(ngModel)]="_chartOptions['Overview']">
+                            <option [value]="'pie'">Pie</option>
+                            <option [value]="'bar'">Bar</option>
+                        </select>
+                    </div>
+
+                    <h5 style="color:red;margin-left:2%" class="row" *ngIf="(!overviewbarcharts.length && !overviewpiecharts.length) && _tabOptions[clickedTab]=='chart'">Select A Branch And Survey To Enable Graphical Representation</h5>
 
                     <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event,'to')" *ngIf="fromDatePickerSet" class="pull-right"></my-date-picker>
                     <my-date-picker [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event,'from')" *ngIf="this._tabOptions[clickedTab]=='raw'" class="pull-right"></my-date-picker>
@@ -98,14 +109,14 @@ import { SurveyService } from '../survey/survey.service';
 
                     <div class="form-group pull-left" *ngIf="this._tabOptions[clickedTab]=='raw'">
                         <select class="form-control" [(ngModel)]="selectedBranchId" (change)="filter('branch')">
-                            <option [value]="">--Filter Branch--</option>
+                            <option [value]="''">--Filter Branch--</option>
                             <option [value]="branch.id" *ngFor="let branch of _branches">{{branch.name}}</option>
                         </select>
                     </div>
 
                     <div class="form-group pull-left" *ngIf="this._tabOptions[clickedTab]=='raw'">
                         <select class="form-control" [(ngModel)]="selectedSurveyId" (change)="filter('survey')">
-                            <option [value]="">--Filter Survey--</option>
+                            <option [value]="''">--Filter Survey--</option>
                             <option [value]="survey.id" *ngFor="let survey of _surveys">{{survey.title}}</option>
                         </select>
                     </div>
@@ -121,15 +132,22 @@ import { SurveyService } from '../survey/survey.service';
 
                     <div class="form-group pull-left" *ngIf="this._tabOptions[clickedTab]=='raw'">
                         <select class="form-control" [(ngModel)]="selectedBranchId" (change)="filter('branch')">
-                            <option [value]="">--Filter Branch--</option>
+                            <option [value]="''">--Filter Branch--</option>
                             <option [value]="branch.id" *ngFor="let branch of _branches">{{branch.name}}</option>
                         </select>
                     </div>
 
                     <div class="form-group pull-left" *ngIf="this._tabOptions[clickedTab]=='raw'">
                         <select class="form-control" [(ngModel)]="selectedSurveyId" (change)="filter('survey')">
-                            <option [value]="">--Filter Survey--</option>
+                            <option [value]="''">--Filter Survey--</option>
                             <option [value]="survey.id" *ngFor="let survey of _surveys">{{survey.title}}</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group pull-left" *ngIf="_tabOptions[clickedTab]=='chart'">
+                        <select class="form-control" [(ngModel)]="_chartOptions['Branches']">
+                            <option [value]="'pie'">Pie</option>
+                            <option [value]="'bar'">Bar</option>
                         </select>
                     </div>
 
@@ -139,8 +157,10 @@ import { SurveyService } from '../survey/survey.service';
 
                 <div class="tab-content clearfix img-thumbnail" style="width:200%">
 
+                    
                     <div class="tab-pane active" id="1a" *ngIf="clickedTab=='Overview' && _tabOptions[clickedTab]=='chart'">
-                        <zingchart *ngFor="let chart of piecharts" [chart]="chart" ></zingchart>
+                        <zingchart *ngFor="let chart of overviewpiecharts" [chart]="chart" [hidden]="_chartOptions[clickedTab]=='bar'"></zingchart>
+                        <zingchart *ngFor="let chart of overviewbarcharts" [chart]="chart" [hidden]="_chartOptions[clickedTab]=='pie'"></zingchart>
                     </div>
 
                     <div class="tab-pane active" id="1a" *ngIf="clickedTab=='Overview' && _tabOptions[clickedTab]=='raw'">
@@ -206,7 +226,8 @@ import { SurveyService } from '../survey/survey.service';
                     </div>
 
                     <div class="tab-pane active" id="3a" *ngIf="clickedTab=='Branches' && _tabOptions[clickedTab]=='chart'">
-                        <zingchart *ngFor="let chart of barcharts" [chart]="chart" ></zingchart>
+                        <zingchart *ngFor="let chart of branchesbarcharts" [chart]="chart" [hidden]="_chartOptions[clickedTab]=='pie'"></zingchart>
+                        <zingchart *ngFor="let chart of branchespiecharts" [chart]="chart" [hidden]="_chartOptions[clickedTab]=='bar'"></zingchart>
                     </div>
 
                     <div class="tab-pane active" id="3a"  *ngIf="clickedTab=='Branches' && _tabOptions[clickedTab]=='raw'">
@@ -355,11 +376,15 @@ import { SurveyService } from '../survey/survey.service';
         
      charts: any; //Chart[];
 
-     barcharts: any;
+     branchesbarcharts: any;
+
+     branchespiecharts: any;
 
      lineChart;
 
-     piecharts: any;
+     overviewpiecharts: Array<any>=[];
+
+     overviewbarcharts: Array<any>=[];
 
      stackedbarcharts: any;
 
@@ -394,7 +419,14 @@ import { SurveyService } from '../survey/survey.service';
                             'Surveys':'raw',
                             'Ratings':'raw',
                             'Branches':'raw'
-                            };
+                        };
+                        
+    private _chartOptions ={
+                            'Overview':'pie',
+                            'Surveys':'pie',
+                            'Ratings':'pie',
+                            'Branches':'pie'
+                        };
 
      private fromDatePickerSet; 
 
@@ -456,27 +488,27 @@ import { SurveyService } from '../survey/survey.service';
 
 
       filter(option){
-          if(option=='branch'){
+          //if(option=='branch'){
                 var obj = {};
-                obj['branchId'] = this.selectedBranchId;
-                obj['surveyId'] = '';
+                obj['branchId'] = this.selectedBranchId || '';
+                obj['surveyId'] = this.selectedSurveyId || '';
                 obj['tab'] = this.clickedTab;
                 obj['to'] = '';
                 obj['from'] = '';
                 this.dateFilter.push(obj);
                 this.getReport(this.dateFilter);
                 this.dateFilter = [];
-          }else if(option=='survey'){
-                var obj = {};
-                obj['surveyId'] = this.selectedSurveyId;
-                obj['branchId'] = '';
-                obj['tab'] = this.clickedTab;
-                obj['to'] = '';
-                obj['from'] = '';
-                this.dateFilter.push(obj);
-                this.getReport(this.dateFilter);
-                this.dateFilter = [];
-          }
+        //   }else if(option=='survey'){
+        //         var obj = {};
+        //         obj['surveyId'] = this.selectedSurveyId;
+        //         obj['branchId'] = '';
+        //         obj['tab'] = this.clickedTab;
+        //         obj['to'] = '';
+        //         obj['from'] = '';
+        //         this.dateFilter.push(obj);
+        //         this.getReport(this.dateFilter);
+        //         this.dateFilter = [];
+        //   }
       }
 
       getReport(filter){
@@ -485,11 +517,14 @@ import { SurveyService } from '../survey/survey.service';
             result => {
                 switch (this.clickedTab) {
                     case 'Overview':
-                        this.piecharts = result.report;
+                        this.overviewpiecharts = result.report.pie;
+                        this.overviewbarcharts = result.report.bar;
                         this.overViewtable = result.raw;
                         break;
                     case 'Branches':
-                        this.barcharts = result.report;
+                        this.branchespiecharts = result.report.pie;
+                        this.branchesbarcharts = result.report.bar;
+                        //this.barcharts = result.report;
                         this._branchesTable = result.raw;
                         break;
                     case 'Ratings':

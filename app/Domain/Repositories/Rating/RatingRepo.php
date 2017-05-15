@@ -43,7 +43,9 @@ class RatingRepo implements RatingRepoInterface
 
         if(collect($request)->get('branchId')){
             $ratings = $ratings->where('ratings.branch_id', collect($request)->get('branchId'));
-        }elseif(collect($request)->get('surveyId')){
+        }
+        
+        if(collect($request)->get('surveyId')){
             $ratings = $ratings->where('ratings.survey_id', collect($request)->get('surveyId'));
         }
 
@@ -69,7 +71,7 @@ class RatingRepo implements RatingRepoInterface
             
             $bSurveys = collect($value)->groupBy('title')->toArray();
             foreach ($bSurveys as $k => $v) {
-
+                
                 $sum = collect($v)->sum('numberOfResponses');
                 $sumScore = collect($v)->sum('totalScore');
                 $averageScore = ($sum>0)?($sumScore/$sum):0;
@@ -125,7 +127,9 @@ class RatingRepo implements RatingRepoInterface
         
         if(collect($request)->get('branchId')){
             $ratings = $ratings->where('ratings.branch_id', collect($request)->get('branchId'));
-        }elseif(collect($request)->get('surveyId')){
+        }
+        
+        if(collect($request)->get('surveyId')){
             $ratings = $ratings->where('ratings.survey_id', collect($request)->get('surveyId'));
         }
 

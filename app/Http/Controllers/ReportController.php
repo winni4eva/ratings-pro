@@ -52,16 +52,10 @@ class ReportController extends Controller
     
         switch ($request->get('tab')) {
             case 'Overview':
-                $report = $this->reportService->getSurveys( 
-                    $request->all(), 
-                     $allowedBranches
-                );
-
-                $raw = $this->reportService->getRawDataOverview( $request->all(), $allowedBranches );
-                
+                $report = $this->reportService->getSurveys( $request->all(), $allowedBranches );
+                $raw = $this->reportService->getRawDataOverview( $request->all(), $allowedBranches );       
                 break;
             case 'Surveys':
-            
                 $report = $this->reportService->getSurveys( $request->all() );
                 break;
             case 'Ratings':

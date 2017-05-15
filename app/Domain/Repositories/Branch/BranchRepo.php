@@ -101,70 +101,73 @@ class BranchRepo implements BranchRepoInterface
                         ->leftjoin('raters', 'ratings.response_id', '=', 'raters.response_id')
                         //->leftJoin(DB::raw('(SELECT SUM(score) AS sum, COUNT(*) as total FROM raters) as r'),'ratings.response_id', '=', 'raters.response_id')
                         //->leftJoin(DB::raw('(SELECT COUNT(*) as totalResponses FROM rat) as r'),'ratings.response_id', '=', 'raters.response_id')
-                        //->whereIn('ratings.branch_id', $branches)
+                        ->whereIn('ratings.branch_id', $branches)
                         //->groupBy('surveys.title','branches.name','raters.score','r.sum','r.total')
                         ->groupBy('surveys.title','branches.name', DB::raw('responseName'), 'raters.score' )
                         ->get();
+        
+        $chart = ['bar'=>[],'pie'=>[]];
 
         $branchRatings = [];
 
         $grouped = collect($ratings)->groupBy('name');
 
         $data = $grouped->toArray();
-        $allSurveys = \App\Survey::pluck('id','title')->all();
-        $allBranches = \App\Branch::whereIn('branches.id', $branches)->pluck('name')->all();
 
-        $allSurveys = collect($allSurveys)->transform(function ($item, $key) {
-            return 0;
-        });
+        $result = [];
         
-        foreach ($allBranches as $key => $value) {
-            if( !(collect($branchRatings)->pluck("text")->search($value) > -1) )
-                $branchRatings[] = ["text" => $value, "values" => $allSurveys->all() ];
-        }
-
-        
-        foreach($data as $branch => $surveys){  
-            // if( !(collect($branchRatings)->pluck("text")->search($branch) > -1) )
-            //     $branchRatings[] = ["text" => $branch, "values" => $allSurveys->all() ];
+        foreach($data as $branch => $surveys){ 
             
             $surveys = collect($surveys)->groupBy('title')->toArray();
-
+             
             foreach ($surveys as $k => $v) {  
                  $sum = collect($v)->sum('numberOfResponses');
                  $sumScore = collect($v)->sum('totalScore');
                  $averageScore = ($sum>0)?($sumScore/$sum):0;
-                 $branchRatings[ collect( $branchRatings )->pluck("text")->search($branch) ]["values"][$k] = round($averageScore,2);
 
+                 $result[] =  [
+                        "values"=> [round($averageScore,2)],
+                        "text"=> $branch.''."( {$k} )",
+                        //"backgroundColor"=> '#FF7965',
+                        //"detached"=>true
+                    ];
             }
 
         }
 
-        
-        collect($branchRatings)->each(function($item,$key)use(&$branchRatings){
-
-            $data = collect([]);
-            foreach(collect($item)->get('values') as $v => $i){
-                $data->push([$v,$i]);
-            }
-            $branchRatings[ collect( $branchRatings )->pluck("text")->search( collect($item)->get('text') ) ]["values"] = $data->all();
-        });
-        
-        $chart[] = [
+        //PIE CHART
+        $chart['pie'][] = [
             'id' => str_random(6),
             'height' => 600,
             'width' => '100%',
             'data' => [
-                'type' => 'bar3d',
-                'title' => [
-                    "text"=> "Surveys & Average Scores",
-                    "font-size"=> "24px",
-                    "adjust-layout"=>true
+                'type' => 'pie',
+                "title"=> [
+                    "fontColor"=> "#8e99a9",
+                    "text"=> 'Branch Survey Averages',
+                    "align"=> "left",
+                    "offsetX"=> 10,
+                    "fontFamily"=> "Open Sans",
+                    "fontSize"=> 25
                 ],
-              'plotarea'=> [
-                "margin"=> "dynamic 45 60 dynamic",
-              ],
-              'legend'=> [
+                "subtitle"=> [
+                    "offsetX"=> 10,
+                    "offsetY"=> 10,
+                    "fontColor"=> "#8e99a9",
+                    "fontFamily"=> "Open Sans",
+                    "fontSize"=> "16",
+                    "text"=> "",
+                    "align"=> "left"
+                ],
+                "source"=> [
+                    "text"=> 'gs.statcounter.com',
+                    "fontColor"=> "#8e99a9",
+                    "fontFamily"=> "Open Sans"
+                ],
+            'plotarea'=> [
+                "margin"=> "20 0 0 0"
+            ],
+            'legend'=> [
                 "layout"=> "float",
                 "background-color"=> "none",
                 "border-width"=> 0,
@@ -175,32 +178,104 @@ class BranchRepo implements BranchRepoInterface
                 "padding"=> 7,
                 "marginRight"=> 17,
                 "cursor"=>"hand"
-              ]
+            ]
             ],
                 "plot"=>[
-                    "tooltip"=>[ "text"=>"%t<br>%v" ],
+                    "borderColor"=> "#2B313B",
+                    "borderWidth"=> 5,
+                    // "slice"=> 90,
                     "valueBox"=> [
-                        "text"=> "%t ( %v )",
-                        //"placement"=> "top-out",
-                        "font-color"=> "black",
-                        "angle"=> -60,
-                        "offset-y"=> 5,
-                        "padding"=> "15%"
+                        "placement"=> 'out',
+                        "text"=> '%t\n%npv% ( %v average score )',
+                        "fontFamily"=> "Open Sans"
                     ],
-                    "animation"=> [
-                        "delay"=> "100",
-                        "effect"=> "4",
-                        "method"=> "5",
-                        "sequence"=> "1"
+                    "tooltip"=>[
+                        "fontSize"=> '18',
+                        "fontFamily"=> "Open Sans",
+                        "padding"=> "5 10",
+                        "text"=> "%npv%"
                     ],
-                    "stacked"=>false,
-                    "stack-type"=>"normal"
-                ],
-                "series" => $branchRatings
+                    "animation"=>[
+                        "effect"=> 2, 
+                        "method"=> 5,
+                        "speed"=> 900,
+                        "sequence"=> 1,
+                        "delay"=> 3000
+                    ]
+                    ],
+                "series" => $result
             ]
-        ]; 
+        ];
 
-        return $chart;
+        //BAR CHART
+        $chart['bar'][] = [
+        'id' => str_random(6),
+        'height' => 600,
+        'width' => '100%',
+        'data' => [
+            'type' => 'bar',
+            "title"=> [
+                    "fontColor"=> "#8e99a9",
+                    "text"=> 'Branch Survey Averages',
+                    "align"=> "left",
+                    "offsetX"=> 10,
+                    "fontFamily"=> "Open Sans",
+                    "fontSize"=> 25
+                ],
+                // "subtitle"=> [
+                //     "offsetX"=> 10,
+                //     "offsetY"=> 10,
+                //     "fontColor"=> "#8e99a9",
+                //     "fontFamily"=> "Open Sans",
+                //     "fontSize"=> "16",
+                //     "text"=> "{$branch->name} branch, {$survey->title}",
+                //     "align"=> "left"
+                // ],
+                "source"=> [
+                    "text"=> 'gs.statcounter.com',
+                    "fontColor"=> "#8e99a9",
+                    "fontFamily"=> "Open Sans"
+                ],
+            'plotarea'=> [
+            "margin"=> "dynamic 45 60 dynamic",
+            ],
+            'legend'=> [
+            "layout"=> "float",
+            "background-color"=> "none",
+            "border-width"=> 0,
+            "shadow"=> 0,
+            "align"=>"center",
+            "adjust-layout"=>true,
+            "item"=>[
+            "padding"=> 7,
+            "marginRight"=> 17,
+            "cursor"=>"hand"
+            ]
+        ],
+            "plot"=>[
+                "tooltip"=>[ "text"=>"%t<br>%v" ],
+                "valueBox"=> [
+                    "text"=> "%t [ %v average score ]",
+                    //"placement"=> "top-out",
+                    "font-color"=> "black",
+                    //"angle"=> -60,
+                    "offset-y"=> 5,
+                    "padding"=> "15%"
+                ],
+                "animation"=> [
+                    "delay"=> "100",
+                    "effect"=> "4",
+                    "method"=> "5",
+                    "sequence"=> "1"
+                ],
+                "stacked"=>false,
+                "stack-type"=>"normal"
+            ],
+            "series" => $result
+        ]
+    ];
+
+    return $chart;
     }
 
     public function getBranchSurveyAverages(array $request, array $branches){
@@ -215,7 +290,9 @@ class BranchRepo implements BranchRepoInterface
 
         if(collect($request)->get('branchId')){
             $ratings = $ratings->where('ratings.branch_id', collect($request)->get('branchId'));
-        }elseif(collect($request)->get('surveyId')){
+        }
+        
+        if(collect($request)->get('surveyId')){
             $ratings = $ratings->where('ratings.survey_id', collect($request)->get('surveyId'));
         }
 

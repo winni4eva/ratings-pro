@@ -20,7 +20,8 @@ class BranchSurveyRepo implements BranchSurveyRepoInterface
      */
     public function save(array $request)
     {
-        
+        //return $this->model->updateOrCreate(['branch_id'=>$request['branch_id']], $request);  
+
         $survey = \DB::table('surveys')->where('id',$request['survey_id'])->first();
         
         $branchSurveys = $this->model->where('branch_id', $request['branch_id'])->get();

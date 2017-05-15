@@ -81,58 +81,139 @@ class SurveyRepo implements SurveyRepoInterface
     }
 
     public function getSurveyRatingsReport($request, $branches){
+
+        //logger( $request );
+        //$branchSurvey = \App\BranchSurvey::first();
         
-        //$surveys = $this->model->with('ratings')->get();
+        $data = $this->model->select('responses.name as responseName' , 'raters.score', DB::raw('COUNT(ratings.response_id) as numberOfResponses') )
+                    ->leftjoin('ratings','ratings.survey_id','=','surveys.id')
+                    ->leftjoin('branches', 'ratings.branch_id', '=', 'branches.id')
+                    ->leftjoin('responses', 'ratings.response_id', '=', 'responses.id')
+                    ->leftjoin('raters', 'ratings.response_id', '=', 'raters.response_id')
+                    ->where('ratings.branch_id', $request['branchId'])
+                    ->where('ratings.survey_id', $request['surveyId'])
+                    ->groupBy( DB::raw('responseName'), 'raters.score'  )
+                    ->orderBy('raters.score','desc')
+                    ->get();
 
-        $branchSurveys = \App\Branch::with('surveys.ratings')->whereIn('id', $branches)->get();
-        $branchRatings = [];
+        $chart = ['bar'=>[],'pie'=>[]];
+        
+        if($request['branchId'] && $request['surveyId'])
+        {
+            $branch = \App\Branch::find( $request['branchId'] );
 
-        $branchSurveys->each(function($item,$key)use(&$branchRatings){
-
-            $branchName = collect($item->toArray())->get('name');
-
-            if( !(collect($branchRatings)->pluck("text")->search($branchName) > -1) )
-                $branchRatings[] = ["text" => $branchName, "values" => []];
- 
-            $unAttacehdSurveys = \App\Survey::whereNotIn('id', collect( collect( $item->toArray() )->get('surveys') )->pluck('id'))->pluck('title');
-                
-            collect( collect( $item->toArray() )->get('surveys') )->each(function($itemSurvey, $i)use($branchName, &$branchRatings){
-                $branchRatings[ collect($branchRatings)->pluck("text")->search($branchName) ]["values"][] = [collect($itemSurvey)->get('title'), collect( collect($itemSurvey)->get('ratings') )->count() ];
+            $survey = \App\Survey::find( $request['surveyId'] );
+            
+            $result = collect($data->toArray())->map(function($item,$key){
+                return [
+                    "values"=> [$item['numberOfResponses']],
+                    "text"=> $item['responseName'],
+                    //"backgroundColor"=> '#FF7965',
+                    //"detached"=>true
+                ];
             });
 
-            collect( $unAttacehdSurveys )->each(function($title, $j)use(&$branchRatings,$branchName, $unAttacehdSurveys){
-                $branchRatings[ collect($branchRatings)->pluck("text")->search($branchName) ]["values"][] = [ $title, 0 ];
-                
-                if(($j+1)==count($unAttacehdSurveys))
-                    $branchRatings[ collect($branchRatings)->pluck("text")->search($branchName) ]["values"] = collect($branchRatings[ collect($branchRatings)->pluck("text")->search($branchName) ]["values"])->sort()->values()->all();
-            });
+            //PIE CHART
+            $chart['pie'][] = [
+                'id' => str_random(6),
+                'height' => 600,
+                'width' => '100%',
+                'data' => [
+                    'type' => 'pie',
+                    "title"=> [
+                        "fontColor"=> "#8e99a9",
+                        "text"=> 'Branch Survey Votes',
+                        "align"=> "left",
+                        "offsetX"=> 10,
+                        "fontFamily"=> "Open Sans",
+                        "fontSize"=> 25
+                    ],
+                    "subtitle"=> [
+                        "offsetX"=> 10,
+                        "offsetY"=> 10,
+                        "fontColor"=> "#8e99a9",
+                        "fontFamily"=> "Open Sans",
+                        "fontSize"=> "16",
+                        "text"=> "{$branch->name} branch, {$survey->title}",
+                        "align"=> "left"
+                    ],
+                    "source"=> [
+                        "text"=> 'gs.statcounter.com',
+                        "fontColor"=> "#8e99a9",
+                        "fontFamily"=> "Open Sans"
+                    ],
+                'plotarea'=> [
+                    "margin"=> "20 0 0 0"
+                ],
+                'legend'=> [
+                    "layout"=> "float",
+                    "background-color"=> "none",
+                    "border-width"=> 0,
+                    "shadow"=> 0,
+                    "align"=>"center",
+                    "adjust-layout"=>true,
+                    "item"=>[
+                    "padding"=> 7,
+                    "marginRight"=> 17,
+                    "cursor"=>"hand"
+                ]
+                ],
+                    "plot"=>[
+                        "borderColor"=> "#2B313B",
+                        "borderWidth"=> 5,
+                        // "slice"=> 90,
+                        "valueBox"=> [
+                            "placement"=> 'out',
+                            "text"=> '%t\n%npv% ( %v vote(s) )',
+                            "fontFamily"=> "Open Sans"
+                        ],
+                        "tooltip"=>[
+                            "fontSize"=> '18',
+                            "fontFamily"=> "Open Sans",
+                            "padding"=> "5 10",
+                            "text"=> "%npv%"
+                        ],
+                        "animation"=>[
+                            "effect"=> 2, 
+                            "method"=> 5,
+                            "speed"=> 900,
+                            "sequence"=> 1,
+                            "delay"=> 3000
+                        ]
+                        ],
+                    "series" => $result
+                ]
+            ];
 
-        });
-
-        //logger( $branchRatings );
-
-        $surveys = collect($branchSurveys->pluck('surveys'))->get(0);
-        
-        $data = [];
-        $chart = [];
-        collect($surveys)->flatMap(function($survey) use(&$data){
-            $data[] =  [ 
-                        'text' => $survey->title, 
-                        'values' => [collect( $survey->ratings )->count()] 
-                    ];       
-        });
-
-        $chart[] = [
+            //BAR CHART
+            $chart['bar'][] = [
             'id' => str_random(6),
             'height' => 600,
             'width' => '100%',
             'data' => [
-                'type' => 'bar3d',
-                'title' => [
-                    "text"=> "Surveys & Responses",
-                    "font-size"=> "24px",
-                    "adjust-layout"=>true
-                ],
+                'type' => 'bar',
+                "title"=> [
+                        "fontColor"=> "#8e99a9",
+                        "text"=> 'Branch Survey Votes',
+                        "align"=> "left",
+                        "offsetX"=> 10,
+                        "fontFamily"=> "Open Sans",
+                        "fontSize"=> 25
+                    ],
+                    // "subtitle"=> [
+                    //     "offsetX"=> 10,
+                    //     "offsetY"=> 10,
+                    //     "fontColor"=> "#8e99a9",
+                    //     "fontFamily"=> "Open Sans",
+                    //     "fontSize"=> "16",
+                    //     "text"=> "{$branch->name} branch, {$survey->title}",
+                    //     "align"=> "left"
+                    // ],
+                    "source"=> [
+                        "text"=> 'gs.statcounter.com',
+                        "fontColor"=> "#8e99a9",
+                        "fontFamily"=> "Open Sans"
+                    ],
               'plotarea'=> [
                 "margin"=> "dynamic 45 60 dynamic",
               ],
@@ -152,10 +233,10 @@ class SurveyRepo implements SurveyRepoInterface
                 "plot"=>[
                     "tooltip"=>[ "text"=>"%t<br>%v" ],
                     "valueBox"=> [
-                        "text"=> "%t ( %v )",
+                        "text"=> "%t [ %v vote(s) ]",
                         //"placement"=> "top-out",
                         "font-color"=> "black",
-                        "angle"=> -60,
+                        //"angle"=> -60,
                         "offset-y"=> 5,
                         "padding"=> "15%"
                     ],
@@ -168,24 +249,11 @@ class SurveyRepo implements SurveyRepoInterface
                     "stacked"=>false,
                     "stack-type"=>"normal"
                 ],
-                "series" => $branchRatings
-            //     "series" => [ 
-            //     [
-            //         "values"=>[["Quality Of Service",20],["Saturday Banking",40],["Loans",25]],
-            //         "text"=> "Spintex"
-            //     ], 
-            //     [
-            //         "values"=>[["Quality Of Service",5],["Saturday Banking",10],["Loans",21]],
-            //         "text"=> "Kumasi"
-            //     ], 
-            //     [
-            //         "values"=>[["Quality Of Service",30],["Saturday Banking",5],["Loans",18]],
-            //         "text"=> "Tamale"
-            //     ] 
-            //   ]
+                "series" => $result
             ]
-        ]; 
+        ];
 
+        }
         return $chart;
     }
 
